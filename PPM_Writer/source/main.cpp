@@ -25,13 +25,12 @@ void displayUsage(char* a_path) {
 int main(int argv, char* argc[]) {
 
 	//Setting up the dimensions of the image
-	int imageWidth = 256;
-	int imageHeight = 256;
+	int imageWidth = 1920;
+	int imageHeight = 1080;
 	int channelColours = 255;
 
 	//output file name
 	std::string outputFilename;
-
 
 	if (argv < 2) { //less than 2 as the path and executable name are always present
 		displayUsage(argc[0]);
@@ -78,24 +77,22 @@ int main(int argv, char* argc[]) {
 
 	//set up aspect ratio
 	float aspectRatio = (float)imageWidth / (float)imageHeight;
-
 	//set up camera
-	float nearPlaneHeight = 2.f;
-	float nearPlaneWidth = aspectRatio * nearPlaneHeight;
+	float nearPlaneHeight	= 2.f;
+	float nearPlaneWidth	= aspectRatio * nearPlaneHeight;
 	float nearPlaneDistance = 1.f;
-
 	//camera position
 	Vector3 cameraPosition = Vector3(0.f, 0.f, 0.f);
-
-	//camera axis
+	//Camera Axis
 	Vector3 cameraRight = Vector3(1.f, 0.f, 0.f);
-	Vector3 cameraUp = Vector3(0.f, 1.f, 0.f);
-	Vector3 cameraFwd = Vector3(0.f, 0.f, 1.f);
-
+	Vector3 cameraUp	= Vector3(0.f, 1.f, 0.f);
+	Vector3 cameraFwd	= Vector3(0.f, 0.f, -1.f);
+	//work out the ratio of the near plane to the output image
+	//this will be the increment horizontally and vertically for each pixel in the image
 	float imageWidthToPlaneRatio = nearPlaneWidth / (float)imageWidth;
-	float imageHeightToPlaneRatio = nearPlaneWidth / (float)imageHeight;
+	float imageHeightToPlaneRatio = nearPlaneHeight / (float)imageHeight;
 
-	Vector3 upperLeftCorner = cameraPosition + Vector3(-nearPlaneWidth * 0.5f, nearPlaneHeight * 0.5f, nearPlaneDistance);
+	Vector3 upperLeftCorner = cameraPosition + Vector3(-nearPlaneWidth * 0.5f, nearPlaneHeight * 0.5f, -nearPlaneDistance);
 
 
 
@@ -104,13 +101,17 @@ int main(int argv, char* argc[]) {
 	std::cout << imageWidth << ' ' << imageHeight << std::endl;
 	std::cout << channelColours << std::endl;
 
+	//Define a sphere origin and radius
+	Vector3 spherePos = Vector3(0.f, 0.f, -1.f);
+	float sphereRadius = 0.5f;
+
 	int i = 0;
 	//for each row of the image
-	for (float vPos = 0.f; vPos < nearPlaneHeight; vPos += imageHeightToPlaneRatio, i++) //ask abt "," 
+	for (float vPos = imageHeightToPlaneRatio; vPos < nearPlaneHeight; vPos += imageHeightToPlaneRatio, i++) 
 	{
 		std::clog << "\rCurrently rendering scanline " << i << " of " << imageHeight << std::flush;
 		//for each pixel in a row
-		for (float hPos = 0.f; hPos < nearPlaneWidth; hPos+=imageHeightToPlaneRatio) 
+		for (float hPos = imageWidthToPlaneRatio; hPos < nearPlaneWidth; hPos += imageWidthToPlaneRatio)
 		{
 			//calculate colour value as a float in range 0->1
 			Vector3 offset = cameraRight * hPos + cameraUp * -vPos + cameraFwd * 0.5f;
@@ -118,9 +119,12 @@ int main(int argv, char* argc[]) {
 
 			//convert ray direction into colour space 0->1
 			ColourRGB rayColour;
-			if (viewRay.IntersectSphere(Vector3(0.f, 0.f, -1.f), 0.5f))
+			float intersectDistance = viewRay.IntersectSphere(spherePos, sphereRadius);
+			if (intersectDistance > 0.f)
 			{
-				rayColour = ColourRGB(1.f, 0.5f, 0.f);
+				Vector3 surfaceNormal = viewRay.PointAt(intersectDistance) - spherePos;
+				surfaceNormal.Normalize();
+				rayColour = (surfaceNormal + 1.f) * 0.5f;
 			}
 			else
 			{

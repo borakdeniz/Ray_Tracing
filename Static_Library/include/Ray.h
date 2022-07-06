@@ -30,7 +30,7 @@ public:
 	Vector3 PointAt(float a_distance);
 
 	//Sphere Intersection Test
-	bool IntersectSphere(const Vector3& a_center, const float a_radius);
+	float IntersectSphere(const Vector3& a_center, const float a_radius);
 
 
 };
