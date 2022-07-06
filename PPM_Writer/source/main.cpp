@@ -115,13 +115,27 @@ int main(int argv, char* argc[]) {
 			//calculate colour value as a float in range 0->1
 			Vector3 offset = cameraRight * hPos + cameraUp * -vPos + cameraFwd * 0.5f;
 			Ray viewRay(cameraPosition, (upperLeftCorner + offset) - cameraPosition);
-			ColourRGB rayColour = RaytoColour(viewRay);
-			rayColour = Lerp(ColourRGB(1.f, 1.f, 1.f), ColourRGB(0.4f, 0.7f, 1.f), rayColour.y);
-			//cast float colour values to int for output file
+
+			//convert ray direction into colour space 0->1
+			ColourRGB rayColour;
+			if (viewRay.IntersectSphere(Vector3(0.f, 0.f, -1.f), 0.5f))
+			{
+				rayColour = ColourRGB(1.f, 0.5f, 0.f);
+			}
+			else
+			{
+				rayColour = RaytoColour(viewRay);
+				//Use Lerp to get colour between white and blue based on the vertical value of the rayColour
+				rayColour = Lerp(Vector3(1.f, 1.f, 1.f), Vector3(0.4f, 0.7f, 1.f), rayColour.y);
+			}
+			//write to output
 			WriteColourRGB(std::cout, rayColour);
 		}
 		std::cout << std::endl;
 	}
+
+	
+	
 
 
 	return EXIT_SUCCESS;

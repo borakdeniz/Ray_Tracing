@@ -44,3 +44,12 @@ Vector3 Ray::PointAt(float a_distance)
 }
 
 
+bool Ray::IntersectSphere(const Vector3& a_center, const float a_radius)
+{
+	Vector3 OC = m_v3Origin - a_center;
+	float a = m_v3Direction.Dot(m_v3Direction);
+	float b = 2.f * Dot(OC, m_v3Direction);
+	float c = Dot(OC, OC) - a_radius * a_radius;
+	float discriminant = b * b - 4.f * a * c;
+	return (discriminant > 0.f); //ask about
+}

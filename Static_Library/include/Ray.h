@@ -29,5 +29,8 @@ public:
 	//Get Point along ray at distance
 	Vector3 PointAt(float a_distance);
 
+	//Sphere Intersection Test
+	bool IntersectSphere(const Vector3& a_center, const float a_radius);
+
 
 };
