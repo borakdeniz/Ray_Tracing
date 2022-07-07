@@ -1,8 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <Vector3.h>
-#include <Ray.h>
+#include <libMath.h>
 
 using ColourRGB = Vector3;
 

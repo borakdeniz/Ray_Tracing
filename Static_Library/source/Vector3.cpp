@@ -57,7 +57,7 @@ bool Vector3::operator==(const Vector3& a_v3) const
 
 bool Vector3::operator!=(const Vector3& a_v3) const
 {
-	return(x != a_v3.x || y != a_v3.y);
+	return(x != a_v3.x || y != a_v3.y || z != a_v3.z);
 }
 
 const Vector3 Vector3::operator-() const

@@ -19,14 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Matrix3.cpp" />
+    <ClCompile Include="source\Matrix4.cpp" />
     <ClCompile Include="source\Ray.cpp" />
     <ClCompile Include="source\Vector2.cpp" />
     <ClCompile Include="source\Vector3.cpp" />
+    <ClCompile Include="source\Vector4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\libMath.h" />
+    <ClInclude Include="include\Matrix3.h" />
+    <ClInclude Include="include\Matrix4.h" />
     <ClInclude Include="include\Ray.h" />
     <ClInclude Include="include\Vector2.h" />
     <ClInclude Include="include\Vector3.h" />
+    <ClInclude Include="include\Vector4.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
