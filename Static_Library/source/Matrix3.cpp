@@ -240,3 +240,30 @@ void Matrix3::Identity()
 	m_21 = 0.0f;		m_22 = 1.0f;		m_23 = 0.0f;
 	m_31 = 0.0f;		m_32 = 0.0f;		m_33 = 1.0f;
 }
+
+//Determinant
+float Matrix3::Determinant() const
+{
+	return (
+		m_11 * (m_22 * m_33 - m_23 * m_32) +
+		m_12 * (m_23 * m_31 - m_21 * m_33) +
+		m_13 * (m_21 * m_32 - m_22 * m_31)
+		);
+}
+
+bool Matrix3::Inverse()
+{
+	float fDet = Determinant();
+	//if determinant is zero this matrix is singular and cannot be inverted
+	if (fDet != 0.f)
+	{
+		Matrix3 cofactor = Matrix3(
+			m_22 * m_33 - m_23 * m_32, -(m_12 * m_33 - m_13 * m_32), m_12 * m_23 - m_13 * m_22,
+			-(m_21 * m_33 - m_23 * m_31), m_11 * m_33 - m_13 * m_31, -(m_11 * m_23 - m_13 * m_21),
+			m_21 * m_32 - m_22 * m_31, -(m_11 * m_32 - m_12 * m_31), m_11 * m_22 - m_12 * m_21);
+		
+		//Transpose the cofactor matrix
+		*this = cofactor * (1.f / fDet);
+	}
+	return false;
+}

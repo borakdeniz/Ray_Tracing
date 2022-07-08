@@ -27,16 +27,16 @@ Matrix4::Matrix4(
 	float a_m21, float a_m22, float a_m23, float a_m24,
 	float a_m31, float a_m32, float a_m33, float a_m34,
 	float a_m41, float a_m42, float a_m43, float a_m44) :
-	m_11(a_m11), m_21(a_m21), m_31(a_m41), m_41(a_m41),
-	m_12(a_m12), m_22(a_m22), m_32(a_m42), m_42(a_m41),
-	m_13(a_m13), m_23(a_m23), m_33(a_m43), m_43(a_m41),
-	m_14(a_m13), m_24(a_m23), m_34(a_m43), m_44(a_m41)
+	m_11(a_m11), m_21(a_m21), m_31(a_m31), m_41(a_m41),
+	m_12(a_m12), m_22(a_m22), m_32(a_m32), m_42(a_m42),
+	m_13(a_m13), m_23(a_m23), m_33(a_m33), m_43(a_m43),
+	m_14(a_m14), m_24(a_m24), m_34(a_m34), m_44(a_m44)
 {
 }
 
 //Construct form Axis angle vectors
-Matrix4::Matrix4(const Vector4& a_xAxis, const Vector4& a_yAxis, const Vector4& a_zAxis, const Vector4& a_tAxis) :
-	m_xAxis(a_xAxis), m_yAxis(a_yAxis), m_zAxis(a_zAxis), m_tAxis(a_tAxis)
+Matrix4::Matrix4(const Vector4& a_xAxis, const Vector4& a_yAxis, const Vector4& a_zAxis, const Vector4& a_wAxis) :
+	m_xAxis(a_xAxis), m_yAxis(a_yAxis), m_zAxis(a_zAxis), m_wAxis(a_wAxis)
 {
 }
 
@@ -61,17 +61,17 @@ Matrix4::~Matrix4()
 
 float& Matrix4::operator()(int a_row, int a_col)
 {
-	assert(a_col >= 0 && a_col < 4);
-	assert(a_row >= 0 && a_row < 4);
-	return(m[a_col - 1][a_row - 1]);
+	assert(a_col > 0 && a_col < 4);
+	assert(a_row > 0 && a_row < 4);
+	return(m[a_col][a_row]);
 }
 
 
 float Matrix4::operator()(int a_iRow, int a_iCol) const
 {
-	assert(a_iCol >= 0 && a_iCol < 4);
-	assert(a_iRow >= 0 && a_iRow < 4);
-	return(m[a_iCol - 1][a_iRow - 1]);
+	assert(a_iCol > 0 && a_iCol < 4);
+	assert(a_iRow > 0 && a_iRow < 4);
+	return(m[a_iCol][a_iRow]);
 }
 
 //Column and Row access
@@ -79,7 +79,7 @@ float Matrix4::operator()(int a_iRow, int a_iCol) const
 void Matrix4::SetColumn(int a_iCol, const Vector4& a_vCol)
 {
 	assert(a_iCol >= 0 && a_iCol < 4);
-	m[a_iCol][0] = a_vCol.x, m[a_iCol][1] = a_vCol.y, m[a_iCol][2] = a_vCol.z, m[a_iCol][3] = a_vCol.t;
+	m[a_iCol][0] = a_vCol.x, m[a_iCol][1] = a_vCol.y, m[a_iCol][2] = a_vCol.z, m[a_iCol][3] = a_vCol.w;
 }
 
 
@@ -148,10 +148,10 @@ Matrix4 Matrix4:: operator + (const Matrix4& a_m4) const
 
 const Matrix4& Matrix4:: operator += (const Matrix4& a_m4)
 {
-	m_11 += a_m4.m_11; m_21 += a_m4.m_21; m_31 += a_m4.m_31; m_31 += a_m4.m_41;
-	m_12 += a_m4.m_12; m_22 += a_m4.m_22; m_32 += a_m4.m_32; m_31 += a_m4.m_42;
-	m_13 += a_m4.m_13; m_23 += a_m4.m_23; m_33 += a_m4.m_33; m_31 += a_m4.m_43;
-	m_14 += a_m4.m_14; m_24 += a_m4.m_24; m_34 += a_m4.m_34; m_31 += a_m4.m_44;
+	m_11 += a_m4.m_11; m_21 += a_m4.m_21; m_31 += a_m4.m_31; m_41 += a_m4.m_41;
+	m_12 += a_m4.m_12; m_22 += a_m4.m_22; m_32 += a_m4.m_32; m_42 += a_m4.m_42;
+	m_13 += a_m4.m_13; m_23 += a_m4.m_23; m_33 += a_m4.m_33; m_43 += a_m4.m_43;
+	m_14 += a_m4.m_14; m_24 += a_m4.m_24; m_34 += a_m4.m_34; m_44 += a_m4.m_44;
 	return *this;
 }
 
@@ -168,10 +168,10 @@ Matrix4  Matrix4::operator - (const Matrix4& a_m4) const
 
 const Matrix4& Matrix4:: operator -= (const Matrix4& a_m4)
 {
-	m_11 -= a_m4.m_11; m_21 -= a_m4.m_21; m_31 -= a_m4.m_31; m_31 -= a_m4.m_41;
-	m_12 -= a_m4.m_12; m_22 -= a_m4.m_22; m_32 -= a_m4.m_32; m_31 -= a_m4.m_42;
-	m_13 -= a_m4.m_13; m_23 -= a_m4.m_23; m_33 -= a_m4.m_33; m_31 -= a_m4.m_43;
-	m_14 -= a_m4.m_14; m_24 -= a_m4.m_24; m_34 -= a_m4.m_34; m_31 -= a_m4.m_44;
+	m_11 -= a_m4.m_11; m_21 -= a_m4.m_21; m_31 -= a_m4.m_31; m_41 -= a_m4.m_41;
+	m_12 -= a_m4.m_12; m_22 -= a_m4.m_22; m_32 -= a_m4.m_32; m_42 -= a_m4.m_42;
+	m_13 -= a_m4.m_13; m_23 -= a_m4.m_23; m_33 -= a_m4.m_33; m_43 -= a_m4.m_43;
+	m_14 -= a_m4.m_14; m_24 -= a_m4.m_24; m_34 -= a_m4.m_34; m_44 -= a_m4.m_44;
 	return *this;
 }
 
@@ -188,10 +188,10 @@ Matrix4  Matrix4::operator *(const float a_fScalar) const
 
 const Matrix4& Matrix4:: operator *= (const float a_fScalar)
 {
-	m_11 *= a_fScalar; m_21 *= a_fScalar; m_31 *= a_fScalar; m_31 *= a_fScalar;
-	m_12 *= a_fScalar; m_22 *= a_fScalar; m_32 *= a_fScalar; m_31 *= a_fScalar;
-	m_13 *= a_fScalar; m_23 *= a_fScalar; m_33 *= a_fScalar; m_31 *= a_fScalar;
-	m_14 *= a_fScalar; m_24 *= a_fScalar; m_34 *= a_fScalar; m_31 *= a_fScalar;
+	m_11 *= a_fScalar; m_21 *= a_fScalar; m_31 *= a_fScalar; m_41 *= a_fScalar;
+	m_12 *= a_fScalar; m_22 *= a_fScalar; m_32 *= a_fScalar; m_42 *= a_fScalar;
+	m_13 *= a_fScalar; m_23 *= a_fScalar; m_33 *= a_fScalar; m_43 *= a_fScalar;
+	m_14 *= a_fScalar; m_24 *= a_fScalar; m_34 *= a_fScalar; m_44 *= a_fScalar;
 	return *this;
 }
 
@@ -200,10 +200,10 @@ Vector4  Matrix4:: operator * (const Vector4& a_v4) const
 {
 	return Vector4
 	(
-		m_11 * a_v4.x + m_12 * a_v4.y + m_13 * a_v4.z + m_14 * a_v4.t,
-		m_21 * a_v4.x + m_22 * a_v4.y + m_23 * a_v4.z + m_24 * a_v4.t,
-		m_31 * a_v4.x + m_32 * a_v4.y + m_33 * a_v4.z + m_34 * a_v4.t,
-		m_41 * a_v4.x + m_42 * a_v4.y + m_43 * a_v4.z + m_44 * a_v4.t
+		m_11 * a_v4.x + m_12 * a_v4.y + m_13 * a_v4.z + m_14 * a_v4.w,
+		m_21 * a_v4.x + m_22 * a_v4.y + m_23 * a_v4.z + m_24 * a_v4.w,
+		m_31 * a_v4.x + m_32 * a_v4.y + m_33 * a_v4.z + m_34 * a_v4.w,
+		m_41 * a_v4.x + m_42 * a_v4.y + m_43 * a_v4.z + m_44 * a_v4.w
 	);
 }
 
@@ -240,13 +240,15 @@ const Matrix4& Matrix4:: operator*=(const Matrix4& a_m4)
 }
 
 //Transpose Matrix - Transform Row to Column
-//ASK ABOUT!!!!
 void Matrix4::Transpose()
 {
 	float k;
 	k = m_12; m_12 = m_21; m_21 = k;
 	k = m_13; m_13 = m_31; m_31 = k;
 	k = m_23; m_23 = m_32; m_32 = k;
+	k = m_14; m_14 = m_41; m_41 = k;
+	k = m_24; m_24 = m_42; m_42 = k;
+	k = m_34; m_43 = m_34; m_43 = k;
 }
 
 Matrix4 Matrix4::GetTranspose() const
@@ -265,12 +267,12 @@ void Matrix4::Scale(const Vector4& a_v4)
 	m_11 = a_v4.x;		m_12 = 0.0f;		m_13 = 0.0f;		m_14 = 0.0f;
 	m_21 = 0.0f;		m_22 = a_v4.y;		m_23 = 0.0f;		m_24 = 0.0f;
 	m_31 = 0.0f;		m_32 = 0.0f;		m_33 = a_v4.z;		m_34 = 0.0f;
-	m_41 = 0.0f;		m_42 = 0.0f;		m_43 = 0.0f;		m_44 = a_v4.t;
+	m_41 = 0.0f;		m_42 = 0.0f;		m_43 = 0.0f;		m_44 = 1.f;
 }
 
 void Matrix4::Scale(float a_fScalar)
 {
-	Scale(Vector4(a_fScalar, a_fScalar, a_fScalar, a_fScalar));
+	Scale(Vector4(a_fScalar, a_fScalar, a_fScalar, 1.f));
 }
 
 //General Matrix Function
@@ -280,4 +282,108 @@ void Matrix4::Identity()
 	m_21 = 0.0f;		m_22 = 1.0f;		m_23 = 0.0f;	m_24 = 0.0f;
 	m_31 = 0.0f;		m_32 = 0.0f;		m_33 = 1.0f;	m_34 = 0.0f;
 	m_41 = 0.0f;		m_42 = 0.0f;		m_43 = 0.0f;	m_44 = 1.0f;
+}
+
+//Determinant
+float Matrix4::Determinant() const
+{
+	float fA =
+		m_11 * (m_22 * (m_33 * m_44 - m_34 * m_43) +
+				m_23 * (m_34 * m_42 - m_32 * m_44) +
+				m_24 * (m_32 * m_43 - m_33 * m_42));
+	float fB =
+		m_12 * (m_21 * (m_33 * m_44 - m_34 * m_43) +
+				m_23 * (m_34 * m_41 - m_31 * m_44) +
+				m_24 * (m_31 * m_43 - m_33 * m_41));
+	float fC =
+		m_13 * (m_21 * (m_32 * m_44 - m_34 * m_42) +
+				m_22 * (m_34 * m_41 - m_31 * m_44) +
+				m_24 * (m_31 * m_42 - m_32 * m_41));
+	float fD =
+		m_14 * (m_21 * (m_32 * m_43 - m_33 * m_42) +
+				m_22 * (m_33 * m_41 - m_31 * m_43) +
+				m_23 * (m_31 * m_42 - m_32 * m_41));
+
+	return fA - fB + fC - fD;
+		
+}
+
+Matrix4 Matrix4::Inverse() const
+{
+	const float fDet = Determinant();
+	if (fDet != 0.0f)
+	{
+		const float fInvDet = 1.f / fDet;
+
+		Matrix4 mat;
+		mat.m_11 = (m_22 * (m_33 * m_44 - m_34 * m_43) +
+			m_23 * (m_34 * m_42 - m_32 * m_44) +
+			m_24 * (m_32 * m_43 - m_33 * m_42)) * fInvDet;
+
+		mat.m_21 = (m_21 * (m_33 * m_44 - m_34 * m_43) +
+			m_23 * (m_34 * m_41 - m_31 * m_44) +
+			m_24 * (m_31 * m_43 - m_33 * m_41)) * -fInvDet;
+
+		mat.m_31 = (m_21 * (m_32 * m_44 - m_34 * m_42) +
+			m_22 * (m_34 * m_41 - m_31 * m_44) +
+			m_24 * (m_31 * m_42 - m_32 * m_41)) * fInvDet;
+
+		mat.m_41 = (m_21 * (m_32 * m_43 - m_33 * m_42) +
+			m_22 * (m_33 * m_41 - m_31 * m_43) +
+			m_23 * (m_31 * m_42 - m_32 * m_41)) * -fInvDet;
+
+		mat.m_12 = (m_12 * (m_33 * m_44 - m_34 * m_43) +
+			m_13 * (m_34 * m_42 - m_32 * m_44) +
+			m_14 * (m_32 * m_43 - m_33 * m_42)) * -fInvDet;
+
+		mat.m_22 = (m_11 * (m_33 * m_44 - m_34 * m_43) +
+			m_13 * (m_34 * m_41 - m_31 * m_44) +
+			m_14 * (m_31 * m_43 - m_33 * m_41)) * fInvDet;
+
+		mat.m_32 = (m_11 * (m_32 * m_44 - m_34 * m_42) +
+			m_12 * (m_34 * m_41 - m_31 * m_44) +
+			m_14 * (m_31 * m_42 - m_32 * m_41)) * -fInvDet;
+
+		mat.m_42 = (m_11 * (m_32 * m_43 - m_33 * m_42) +
+			m_12 * (m_33 * m_41 - m_31 * m_43) +
+			m_13 * (m_31 * m_42 - m_32 * m_41)) * fInvDet;
+
+		mat.m_13 = (m_12 * (m_33 * m_44 - m_24 * m_43) +
+			m_13 * (m_34 * m_42 - m_22 * m_44) +
+			m_14 * (m_32 * m_43 - m_23 * m_42)) * fInvDet;
+
+		mat.m_23 = (m_11 * (m_33 * m_44 - m_24 * m_43) +
+			m_13 * (m_34 * m_41 - m_21 * m_44) +
+			m_14 * (m_31 * m_43 - m_23 * m_41)) * -fInvDet;
+
+		mat.m_33 = (m_11 * (m_32 * m_44 - m_24 * m_42) +
+			m_12 * (m_34 * m_41 - m_21 * m_44) +
+			m_14 * (m_31 * m_42 - m_22 * m_41)) * fInvDet;
+
+		mat.m_43 = (m_11 * (m_32 * m_43 - m_23 * m_42) +
+			m_12 * (m_33 * m_41 - m_21 * m_43) +
+			m_13 * (m_31 * m_42 - m_22 * m_41)) * -fInvDet;
+
+		mat.m_14 = (m_12 * (m_23 * m_34 - m_24 * m_33) +
+			m_13 * (m_24 * m_32 - m_22 * m_34) +
+			m_14 * (m_22 * m_33 - m_23 * m_32)) * -fInvDet;
+
+		mat.m_24 = (m_11 * (m_23 * m_34 - m_24 * m_33) +
+			m_13 * (m_24 * m_31 - m_21 * m_34) +
+			m_14 * (m_21 * m_33 - m_23 * m_31)) * fInvDet;
+
+		mat.m_34 = (m_11 * (m_22 * m_34 - m_24 * m_32) +
+			m_12 * (m_24 * m_31 - m_21 * m_34) +
+			m_14 * (m_21 * m_32 - m_22 * m_31)) * -fInvDet;
+
+		mat.m_44 = (m_11 * (m_22 * m_33 - m_23 * m_32) +
+			m_12 * (m_23 * m_31 - m_21 * m_33) +
+			m_13 * (m_21 * m_32 - m_22 * m_31)) * fInvDet;
+
+		return mat;
+	}
+	else
+	{
+		return Matrix4::IDENTITY;
+	}
 }

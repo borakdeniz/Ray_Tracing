@@ -3,19 +3,19 @@
 class Vector4 {
 public:
 	//Member variables
-	float x; float y; float z; float t;
+	float x; float y; float z; float w;
 #pragma region Constructors/Destructors
 	//Constructors
 	Vector4();
 	Vector4(const Vector4& a_v4);
-	Vector4(const float& a_x, const float& a_y, const float& a_z, const float& a_t);
+	Vector4(const float& a_x, const float& a_y, const float& a_z, const float& a_w);
 
 	float Length() const;
 	void Normalize();
 
 	//Destructor
 
-	~Vector4();
+	~Vector4() = default;
 #pragma endregion
 #pragma region Operator Overloads
 	//Equivalance Operators

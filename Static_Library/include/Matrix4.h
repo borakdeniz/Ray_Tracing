@@ -8,21 +8,26 @@ private:
 
 	union
 	{
-		float m[3][3];
+		struct 
+		{
+			float m[4][4];
+		};
+		
 		struct
 		{
 			float m_11, m_12, m_13, m_14; // Column 1 -> x axis
 			float m_21, m_22, m_23, m_24; // Column 2 -> y axis
 			float m_31, m_32, m_33, m_34; // Column 3 -> z axis
-			float m_41, m_42, m_43, m_44; // Column 4 -> t axis
+			float m_41, m_42, m_43, m_44; // Column 4 -> w axis
 
 		};
+
 		struct
 		{
 			Vector4 m_xAxis;
 			Vector4 m_yAxis;
 			Vector4 m_zAxis;
-			Vector4 m_tAxis;
+			Vector4 m_wAxis;
 
 		};
 	};
@@ -40,39 +45,39 @@ public:
 			float m_31, float m_32, float m_33, float m_34,
 			float m_41, float m_42, float m_43, float m_44
 	);
-	Matrix4(const Vector4& a_xAxis, const Vector4& a_yAxis, const Vector4& a_zAxis, const Vector4& a_tAxis);
+	Matrix4(const Vector4& a_xAxis, const Vector4& a_yAxis, const Vector4& a_zAxis, const Vector4& a_wAxis);
 	Matrix4(const Matrix4& a_m4);
 
 	//Destructor
 	~Matrix4();
 
 	//Component Access Operators
-	float& operator()		(int a_iColumn, int a_iRow);
-	float operator()		(int a_iColumn, int a_iRow) const;
+	float&		operator()		(int a_iColumn, int a_iRow);
+	float		operator()		(int a_iColumn, int a_iRow) const;
 
 	//Column and Row Access 
 	void		SetColumn(int a_iCol, const Vector4& a_vCol);
 	Vector4		GetColumn(int a_iCol) const;
 
 	//Equivalance Operator
-	bool	operator ==		(const Matrix4& a_m4) const;
-	bool	operator !=		(const Matrix4& a_m4) const;
+	bool		operator ==		(const Matrix4& a_m4) const;
+	bool		operator !=		(const Matrix4& a_m4) const;
 
 	//Overload operators for Substraction
-	Matrix4	operator -		(const Matrix4& a_m4) const;
+	Matrix4		operator -		(const Matrix4& a_m4) const;
 	const Matrix4& operator -=		(const Matrix4& a_m4);
 
 	//Overload operators for Addition
-	Matrix4	operator +		(const Matrix4& a_m4) const;
+	Matrix4		operator +		(const Matrix4& a_m4) const;
 	const Matrix4& operator +=		(const Matrix4& a_m4);
 
 	//Overload operators for Multiplication
-	Matrix4	operator *		(const float a_scalar) const;
+	Matrix4		operator *		(const float a_scalar) const;
 	const Matrix4& operator *=		(const float a_scalar);
 
-	Vector4 operator *		(const Vector4& a_v4) const;
+	Vector4		operator *		(const Vector4& a_v4) const;
 
-	Matrix4 operator *		(const Matrix4& a_m4) const;
+	Matrix4		operator *		(const Matrix4& a_m4) const;
 	const Matrix4& operator *=		(const Matrix4& a_m4);
 
 	//Transpose
@@ -84,6 +89,12 @@ public:
 	void		Scale(const Vector4& a_v4);
 
 	//Identity
-	void	Identity();
+	void		Identity();
+
+	//Determinant
+	float		Determinant() const;
+
+	//Inverse
+	Matrix4		Inverse()	const;
 
 };

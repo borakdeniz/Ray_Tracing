@@ -7,7 +7,11 @@ private:
 
 	union
 	{
-		float m[3][3];
+		struct 
+		{
+			float m[3][3];
+		};
+
 		struct 
 		{
 			float m_11, m_12, m_13; // Column 1 -> x axis
@@ -79,4 +83,10 @@ public:
 	//Identity
 	void	Identity();
 
+	//Determinant
+	float		Determinant()	const;
+
+	//Inverse
+	bool		Inverse();
+	Matrix3		GetInverse()	const;
 };
