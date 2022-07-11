@@ -1,6 +1,6 @@
 #pragma once
 #pragma once
-#include <Vector4.h>
+#include <libMath.h>
 
 class Matrix4
 {
@@ -58,6 +58,7 @@ public:
 	//Column and Row Access 
 	void		SetColumn(int a_iCol, const Vector4& a_vCol);
 	Vector4		GetColumn(int a_iCol) const;
+	Vector3		GetColumnV3(int a_iCol) const;
 
 	//Equivalance Operator
 	bool		operator ==		(const Matrix4& a_m4) const;
@@ -80,6 +81,8 @@ public:
 	Matrix4		operator *		(const Matrix4& a_m4) const;
 	const Matrix4& operator *=		(const Matrix4& a_m4);
 
+	Vector3		operator *		(const Vector3& a_v3) const;
+
 	//Transpose
 	void		Transpose();
 	Matrix4		GetTranspose() const;
@@ -97,4 +100,9 @@ public:
 	//Inverse
 	Matrix4		Inverse()	const;
 
+
+	//Camera Projection Functions
+	bool		Perspective(float fRafFovY, float fAspectRatio, float fZNear, float fZFar);
+	bool		Ortographic(float fLeft, float fRight, float fTop, float fBottom, float fNear, float fFar);
+	static		Matrix4		LookAt(const Vector3& a_v3EyePos, const Vector3& a_v3Target, const Vector3& a_v3Up);
 };

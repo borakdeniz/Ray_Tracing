@@ -21,16 +21,27 @@ float Vector3::Length() const
 	return sqrtf(x * x + y * y + z * z); //ask
 }
 
+//\============================================================================
+//\ Normalise the Vector
+//\============================================================================
 void Vector3::Normalize()
 {
 	float length = Length();
-	if (length > 0.f)
+	if (length > 0.f)            //if this is false vector has no length
 	{
 		float invLen = 1.f / length;
 		x *= invLen;
 		y *= invLen;
 		z *= invLen;
 	}
+}
+Vector3 Normalize(const Vector3& a_vec3)
+{
+	float mag = a_vec3.Length();
+	if (mag > 0.f) {
+		return Vector3(a_vec3.x / mag, a_vec3.y / mag, a_vec3.z / mag);
+	}
+	return Vector3(0.f, 0.f, 0.f);
 }
 //Copy Constructor
 
@@ -104,3 +115,16 @@ Vector3 Lerp(const Vector3& a_v3A, const Vector3& a_v3B, const float a_t)
 {
 	return(a_v3B - a_v3A) * a_t + a_v3A;
 }
+
+//\=========================================================================
+//\ Cross Product
+//\=========================================================================
+Vector3 Vector3::Cross(const Vector3& a_v3) const
+{
+	return Vector3(y * a_v3.z - a_v3.y * z, z * a_v3.x - x * a_v3.z, x * a_v3.y - y * a_v3.x);
+}
+Vector3    Cross(const Vector3& a_v3a, const Vector3& a_v3b)
+{
+	return a_v3a.Cross(a_v3b);
+}
+

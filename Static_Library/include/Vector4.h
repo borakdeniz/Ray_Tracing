@@ -1,4 +1,5 @@
 #pragma once
+#include <Vector3.h>
 
 class Vector4 {
 public:
@@ -8,10 +9,12 @@ public:
 	//Constructors
 	Vector4();
 	Vector4(const Vector4& a_v4);
+	Vector4(const Vector3& a_v3, float a_w = 0.f);
 	Vector4(const float& a_x, const float& a_y, const float& a_z, const float& a_w);
 
 	float Length() const;
-	void Normalize();
+	void				Normalize();
+	friend    Vector4	Normalize(const Vector4& a_vec);
 
 	//Destructor
 
@@ -26,6 +29,8 @@ public:
 	//Negate Operator
 
 	const Vector4 operator - () const;
+
+	Vector3 xyz() const;
 
 	//Subtraction Operator
 

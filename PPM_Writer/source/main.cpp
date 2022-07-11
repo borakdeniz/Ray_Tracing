@@ -3,6 +3,8 @@
 #include <string>
 #include <fstream>
 #include <ColourRGB.h>
+#include <Camera.h>
+#include <Ellipsoid.h>
 
 
 typedef enum input_args
@@ -75,25 +77,10 @@ int main(int argv, char* argc[]) {
 	std::ofstream outbuff(outputFilename.c_str()); //create an out file stream and set it to our output file name
 	std::cout.rdbuf(outbuff.rdbuf()); //set the stream buffer for cout to the file out stream buffer
 
-	//set up aspect ratio
-	float aspectRatio = (float)imageWidth / (float)imageHeight;
-	//set up camera
-	float nearPlaneHeight	= 2.f;
-	float nearPlaneWidth	= aspectRatio * nearPlaneHeight;
-	float nearPlaneDistance = 1.f;
-	//camera position
-	Vector3 cameraPosition = Vector3(0.f, 0.f, 0.f);
-	//Camera Axis
-	Vector3 cameraRight = Vector3(1.f, 0.f, 0.f);
-	Vector3 cameraUp	= Vector3(0.f, 1.f, 0.f);
-	Vector3 cameraFwd	= Vector3(0.f, 0.f, -1.f);
-	//work out the ratio of the near plane to the output image
-	//this will be the increment horizontally and vertically for each pixel in the image
-	float imageWidthToPlaneRatio = nearPlaneWidth / (float)imageWidth;
-	float imageHeightToPlaneRatio = nearPlaneHeight / (float)imageHeight;
-
-	Vector3 upperLeftCorner = cameraPosition + Vector3(-nearPlaneWidth * 0.5f, nearPlaneHeight * 0.5f, -nearPlaneDistance);
-
+	Camera mainCamera;
+	mainCamera.SetPerspective(60.f, (float)imageWidth / (float)imageHeight, 0.1f, 1000.f);
+	mainCamera.setPosition(Vector3(0.f, 0.f, 5.f));
+	mainCamera.LookAt(Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f));
 
 
 	//output the Image Header data
@@ -102,29 +89,37 @@ int main(int argv, char* argc[]) {
 	std::cout << channelColours << std::endl;
 
 	//Define a sphere origin and radius
-	Vector3 spherePos = Vector3(0.f, 0.f, -1.f);
-	float sphereRadius = 0.5f;
+	Ellipsoid s1(Vector3(-1.f, -1.f, -15.f), 3.f);
 
-	int i = 0;
+	//get reciprocal of image dimensions
+	float invWidth = 1.f / (float)imageWidth;
+	float invHeight = 1.f / (float)imageHeight;
+
 	//for each row of the image
-	for (float vPos = imageHeightToPlaneRatio; vPos < nearPlaneHeight; vPos += imageHeightToPlaneRatio, i++) 
+	for (int i = 0; i < imageHeight; i++) 
 	{
 		std::clog << "\rCurrently rendering scanline " << i << " of " << imageHeight << std::flush;
 		//for each pixel in a row
-		for (float hPos = imageWidthToPlaneRatio; hPos < nearPlaneWidth; hPos += imageWidthToPlaneRatio)
+		//Calculate Screen Space Y
+		float screenSpaceY = 1.f - 2.f * ((float)i + 0.5f) * invHeight;
+		
+		for (int j = 0; j < imageWidth; j++)
 		{
-			//calculate colour value as a float in range 0->1
-			Vector3 offset = cameraRight * hPos + cameraUp * -vPos + cameraFwd * 0.5f;
-			Ray viewRay(cameraPosition, (upperLeftCorner + offset) - cameraPosition);
+			//Get the current pixel in screen space cooridnates( in range -1 to 1 )
+			float screenSpaceX = 2.f * ((float)j + 0.5f) * invWidth - 1.f;
+			Vector2 screenSpacePos = Vector2(screenSpaceX, screenSpaceY);
+
+			//Create a Ray with origin at the camera and direction into the near plane offset
+			Ray viewRay = mainCamera.CastRay(screenSpacePos);
 
 			//convert ray direction into colour space 0->1
 			ColourRGB rayColour;
-			float intersectDistance = viewRay.IntersectSphere(spherePos, sphereRadius);
-			if (intersectDistance > 0.f)
+			Vector3 hitPos = Vector3(0.f, 0.f, 0.f);
+			Vector3 surfNormal = Vector3(0.f, 0.f, 0.f);
+
+			if (s1.IntersectTest(viewRay,hitPos, surfNormal))
 			{
-				Vector3 surfaceNormal = viewRay.PointAt(intersectDistance) - spherePos;
-				surfaceNormal.Normalize();
-				rayColour = (surfaceNormal + 1.f) * 0.5f;
+				rayColour = (surfNormal + 1.f) * 0.5f;
 			}
 			else
 			{
@@ -141,7 +136,8 @@ int main(int argv, char* argc[]) {
 	
 	
 
-
+	//set output steam buffer back to what it was previously
+	std::cout.rdbuf(backup);
 	return EXIT_SUCCESS;
 }
 

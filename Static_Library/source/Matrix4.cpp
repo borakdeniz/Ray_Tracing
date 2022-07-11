@@ -90,6 +90,12 @@ Vector4 Matrix4::GetColumn(int a_iCol) const
 	return Vector4(m[a_iCol][0], m[a_iCol][1], m[a_iCol][2], m[a_iCol][3]);
 }
 
+Vector3	Matrix4::GetColumnV3(int a_iCol) const
+{
+	assert(a_iCol >= 0 && a_iCol < 4);
+	return Vector3(m[a_iCol][0], m[a_iCol][1], m[a_iCol][2]);
+}
+
 //Equivalance Operators
 bool Matrix4::operator == (const Matrix4& a_m4) const
 {
@@ -308,78 +314,61 @@ float Matrix4::Determinant() const
 		
 }
 
-Matrix4 Matrix4::Inverse() const
+Matrix4 Matrix4::Inverse()  const
 {
 	const float fDet = Determinant();
 	if (fDet != 0.0f)
 	{
 		const float fInvDet = 1.f / fDet;
-
 		Matrix4 mat;
 		mat.m_11 = (m_22 * (m_33 * m_44 - m_34 * m_43) +
 			m_23 * (m_34 * m_42 - m_32 * m_44) +
 			m_24 * (m_32 * m_43 - m_33 * m_42)) * fInvDet;
-
 		mat.m_21 = (m_21 * (m_33 * m_44 - m_34 * m_43) +
 			m_23 * (m_34 * m_41 - m_31 * m_44) +
 			m_24 * (m_31 * m_43 - m_33 * m_41)) * -fInvDet;
-
 		mat.m_31 = (m_21 * (m_32 * m_44 - m_34 * m_42) +
 			m_22 * (m_34 * m_41 - m_31 * m_44) +
 			m_24 * (m_31 * m_42 - m_32 * m_41)) * fInvDet;
-
 		mat.m_41 = (m_21 * (m_32 * m_43 - m_33 * m_42) +
 			m_22 * (m_33 * m_41 - m_31 * m_43) +
 			m_23 * (m_31 * m_42 - m_32 * m_41)) * -fInvDet;
-
 		mat.m_12 = (m_12 * (m_33 * m_44 - m_34 * m_43) +
 			m_13 * (m_34 * m_42 - m_32 * m_44) +
 			m_14 * (m_32 * m_43 - m_33 * m_42)) * -fInvDet;
-
 		mat.m_22 = (m_11 * (m_33 * m_44 - m_34 * m_43) +
 			m_13 * (m_34 * m_41 - m_31 * m_44) +
 			m_14 * (m_31 * m_43 - m_33 * m_41)) * fInvDet;
-
 		mat.m_32 = (m_11 * (m_32 * m_44 - m_34 * m_42) +
 			m_12 * (m_34 * m_41 - m_31 * m_44) +
 			m_14 * (m_31 * m_42 - m_32 * m_41)) * -fInvDet;
-
 		mat.m_42 = (m_11 * (m_32 * m_43 - m_33 * m_42) +
 			m_12 * (m_33 * m_41 - m_31 * m_43) +
 			m_13 * (m_31 * m_42 - m_32 * m_41)) * fInvDet;
-
-		mat.m_13 = (m_12 * (m_33 * m_44 - m_24 * m_43) +
-			m_13 * (m_34 * m_42 - m_22 * m_44) +
-			m_14 * (m_32 * m_43 - m_23 * m_42)) * fInvDet;
-
-		mat.m_23 = (m_11 * (m_33 * m_44 - m_24 * m_43) +
-			m_13 * (m_34 * m_41 - m_21 * m_44) +
-			m_14 * (m_31 * m_43 - m_23 * m_41)) * -fInvDet;
-
-		mat.m_33 = (m_11 * (m_32 * m_44 - m_24 * m_42) +
-			m_12 * (m_34 * m_41 - m_21 * m_44) +
-			m_14 * (m_31 * m_42 - m_22 * m_41)) * fInvDet;
-
-		mat.m_43 = (m_11 * (m_32 * m_43 - m_23 * m_42) +
-			m_12 * (m_33 * m_41 - m_21 * m_43) +
-			m_13 * (m_31 * m_42 - m_22 * m_41)) * -fInvDet;
-
+		mat.m_13 = (m_12 * (m_23 * m_44 - m_24 * m_43) +
+			m_13 * (m_24 * m_42 - m_22 * m_44) +
+			m_14 * (m_22 * m_43 - m_23 * m_42)) * fInvDet;
+		mat.m_23 = (m_11 * (m_23 * m_44 - m_24 * m_43) +
+			m_13 * (m_24 * m_41 - m_21 * m_44) +
+			m_14 * (m_21 * m_43 - m_23 * m_41)) * -fInvDet;
+		mat.m_33 = (m_11 * (m_22 * m_44 - m_24 * m_42) +
+			m_12 * (m_24 * m_41 - m_21 * m_44) +
+			m_14 * (m_21 * m_42 - m_22 * m_41)) * fInvDet;
+		mat.m_43 = (m_11 * (m_22 * m_43 - m_23 * m_42) +
+			m_12 * (m_23 * m_41 - m_21 * m_43) +
+			m_13 * (m_21 * m_42 - m_22 * m_41)) * -fInvDet;
 		mat.m_14 = (m_12 * (m_23 * m_34 - m_24 * m_33) +
 			m_13 * (m_24 * m_32 - m_22 * m_34) +
 			m_14 * (m_22 * m_33 - m_23 * m_32)) * -fInvDet;
-
 		mat.m_24 = (m_11 * (m_23 * m_34 - m_24 * m_33) +
 			m_13 * (m_24 * m_31 - m_21 * m_34) +
 			m_14 * (m_21 * m_33 - m_23 * m_31)) * fInvDet;
-
 		mat.m_34 = (m_11 * (m_22 * m_34 - m_24 * m_32) +
 			m_12 * (m_24 * m_31 - m_21 * m_34) +
 			m_14 * (m_21 * m_32 - m_22 * m_31)) * -fInvDet;
-
 		mat.m_44 = (m_11 * (m_22 * m_33 - m_23 * m_32) +
 			m_12 * (m_23 * m_31 - m_21 * m_33) +
 			m_13 * (m_21 * m_32 - m_22 * m_31)) * fInvDet;
-
 		return mat;
 	}
 	else
@@ -387,3 +376,104 @@ Matrix4 Matrix4::Inverse() const
 		return Matrix4::IDENTITY;
 	}
 }
+
+bool Matrix4::Perspective(
+	float fRadFovY,
+	float fAspectRatio,
+	float fZNear,
+	float fZFar
+) 
+{
+	float tanHalfFov = tanf(fRadFovY * 0.5f);
+	if (fabsf(fZFar - fZNear) < 0.01f)
+	{
+		return false;
+	}
+	const float w = 1.f / (fAspectRatio * tanHalfFov);
+	const float h = 1.f / tanHalfFov;
+
+	const float r = 1.0f / (fZFar - fZNear);
+
+	//x-axis column
+	m_11 = w;	m_21 = 0.0f;	m_31 = 0.0f;	m_41 = 0.0f;
+
+	//y-axis column
+	m_12 = 0.0f;	m_22 = h;	m_32 = 0.0f;	m_42= 0.0f;
+
+	//z-axis column
+	m_13 = 0.0f;	m_23 = 0.0f;	m_33 = -(fZFar + fZNear) * r;	m_43 = -1.f;
+
+	//Transpose column
+	m_14 = 0.0f;	m_24 = 0.0f;	m_34 = -(2.0f * fZFar * fZNear) * r;	m_44 = 0.0f;
+
+	return true;
+
+}
+
+bool Matrix4::Ortographic(float fLeft, float fRight, float fTop, float fBottom, float fNear, float fFar)
+{
+	float deltaX = fRight - fLeft;
+	float deltaY = fTop - fBottom;
+	float deltaZ = fFar - fNear;
+
+	//x-axis column
+	m_11 = 2.0f / deltaX;	m_21 = 0.0f;	m_31 = 0.0f;	m_41 = 0.0f;
+
+	//y-axis column
+	m_12 = 0.0f;	m_22 = 2.0f / deltaY;	m_32 = 0.0f;	m_42 = 0.0f;
+
+	//z-axis column
+	m_13 = 0.0f;	m_23 = 0.0f;	m_33 = - 2.0f / deltaZ;	m_43 = -1.f;
+
+	//Transpose column
+	m_14 = -((fRight + fLeft) /deltaX);
+	m_24 = ((fTop + fBottom) / deltaY);
+	m_34 = ((fFar + fNear) / deltaZ);
+	m_44 = 1.0f;
+
+	return true;
+}
+
+Matrix4 Matrix4::LookAt(const Vector3& a_v3EyePos, const Vector3& a_v3Target, const Vector3& a_v3Up)
+{
+	Vector3 vRight;
+	Vector3 vForward;
+	Vector3 vUp;
+
+	vForward = a_v3Target - a_v3EyePos;
+	vForward.Normalize();
+
+	vRight = Cross(vForward, a_v3Up);
+	vRight.Normalize();
+
+	vUp = Cross(vRight, vForward);
+	vUp.Normalize();
+
+	Matrix4 mat = Matrix4::IDENTITY;
+
+	//x-axis column
+	mat.m_11 = vRight.x;	mat.m_21 = vRight.y;	mat.m_31 = vRight.z;	mat.m_41 = 0.0f;
+
+	//y-axis column
+	mat.m_12 = vUp.x;	mat.m_22 = vUp.y;	mat.m_32 = vUp.z;	mat.m_41 = 0.0f;
+
+	//z-axis column
+	mat.m_13 = -vForward.x;	mat.m_23 = -vForward.y;	mat.m_33 = -vForward.z;	mat.m_43 = 0.0f;
+	mat.Transpose();
+	
+	mat.m_14 = -Dot(vRight, a_v3EyePos);
+	mat.m_24 = -Dot(vUp, a_v3EyePos);
+	mat.m_34 = Dot(vForward, a_v3EyePos);
+	mat.m_44 = 1.0f;
+
+	return mat;
+}
+
+Vector3 Matrix4::operator*(const Vector3& a_v3) const
+{
+	return Vector3(m_11 * a_v3.x + m_12 * a_v3.y + m_13 * a_v3.z,
+		m_21 * a_v3.x + m_22 * a_v3.y + m_23 * a_v3.z,
+		m_31 * a_v3.x + m_32 * a_v3.y + m_33 * a_v3.z);
+}
+
+

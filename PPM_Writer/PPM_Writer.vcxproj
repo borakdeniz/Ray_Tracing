@@ -19,14 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Camera.cpp" />
+    <ClCompile Include="source\Ellipsoid.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\Primitive.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\ppmViewer.js" />
     <None Include="viewPPM.bat" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\ColourRGB.h" />
+    <ClInclude Include="include\Ellipsoid.h" />
+    <ClInclude Include="include\Primitive.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -11,7 +11,12 @@ public:
 	Vector3(const float& a_x, const float& a_y, const float& a_z);
 
 	float Length() const;
-	void Normalize();
+
+	//\=========================================================================
+	//\ Normalise the Vector - modifies member variables (non const function)
+	//\=========================================================================
+	void				Normalize();
+	friend    Vector3	Normalize(const Vector3& a_vec);
 
 	//Destructor
 
@@ -48,6 +53,12 @@ public:
 	Vector3 operator * (const float& a_scalar) const; 
 
 	friend Vector3 Lerp(const Vector3& a_v3A, const Vector3& a_v3B, const float a_t);
+
+	//\=========================================================================
+	//\ Cross Product
+	//\=========================================================================
+	Vector3					  Cross(const Vector3& a_v3) const;
+	friend Vector3            Cross(const Vector3& a_v3a, const Vector3& a_v3b);
 
 #pragma endregion
 

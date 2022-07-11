@@ -25,7 +25,7 @@ float Vector4::Length() const
 void Vector4::Normalize()
 {
 	float length = Length();
-	if (length > 0.f)
+	if (length > 0.f)            //if this is false vector has no length
 	{
 		float invLen = 1.f / length;
 		x *= invLen;
@@ -33,6 +33,14 @@ void Vector4::Normalize()
 		z *= invLen;
 		w *= invLen;
 	}
+}
+Vector4 Normalize(const Vector4& a_vec4)
+{
+	float mag = a_vec4.Length();
+	if (mag > 0.f) {
+		return Vector4(a_vec4.x / mag, a_vec4.y / mag, a_vec4.z / mag, a_vec4.w / mag);
+	}
+	return Vector4(0.f, 0.f, 0.f, 0.f);
 }
 //Copy Constructor
 
@@ -99,4 +107,14 @@ Vector4 Vector4::operator*(const float& a_scalar) const
 Vector4 Lerp(const Vector4& a_v4A, const Vector4& a_v4B, const float a_t)
 {
 	return(a_v4B - a_v4A) * a_t + a_v4A;
+}
+
+Vector3 Vector4::xyz() const
+{
+	return Vector3(x, y, z);
+}
+
+Vector4::Vector4(const Vector3& a_v3, float a_w):
+	x(a_v3.x), y(a_v3.y), z(a_v3.z), w(a_w)
+{
 }
