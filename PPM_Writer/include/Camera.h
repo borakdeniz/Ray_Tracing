@@ -33,7 +33,7 @@ public:
 private:
 	Matrix4 m_projectionMatrix;
 	Matrix4 m_Transform;
-	float a_aspectRatio;
+	float m_aspectRatio;
 	float m_fov;
 	float m_zNear;
 	float m_zFar;

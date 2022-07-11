@@ -23,10 +23,10 @@ Matrix4::Matrix4(const float* a_mat) :
 
 //Constructor using all components of matrix data structure
 Matrix4::Matrix4(
-	float a_m11, float a_m12, float a_m13, float a_m14,
-	float a_m21, float a_m22, float a_m23, float a_m24,
-	float a_m31, float a_m32, float a_m33, float a_m34,
-	float a_m41, float a_m42, float a_m43, float a_m44) :
+	float a_m11, float a_m21, float a_m31, float a_m41,
+	float a_m12, float a_m22, float a_m32, float a_m42,
+	float a_m13, float a_m23, float a_m33, float a_m43,
+	float a_m14, float a_m24, float a_m34, float a_m44) :
 	m_11(a_m11), m_21(a_m21), m_31(a_m31), m_41(a_m41),
 	m_12(a_m12), m_22(a_m22), m_32(a_m32), m_42(a_m42),
 	m_13(a_m13), m_23(a_m23), m_33(a_m33), m_43(a_m43),
@@ -290,85 +290,102 @@ void Matrix4::Identity()
 	m_41 = 0.0f;		m_42 = 0.0f;		m_43 = 0.0f;	m_44 = 1.0f;
 }
 
-//Determinant
+//\===========================================================================================
+//\ Inverse Matrix
+//\===========================================================================================
 float Matrix4::Determinant() const
 {
-	float fA =
-		m_11 * (m_22 * (m_33 * m_44 - m_34 * m_43) +
-				m_23 * (m_34 * m_42 - m_32 * m_44) +
-				m_24 * (m_32 * m_43 - m_33 * m_42));
-	float fB =
-		m_12 * (m_21 * (m_33 * m_44 - m_34 * m_43) +
-				m_23 * (m_34 * m_41 - m_31 * m_44) +
-				m_24 * (m_31 * m_43 - m_33 * m_41));
-	float fC =
-		m_13 * (m_21 * (m_32 * m_44 - m_34 * m_42) +
-				m_22 * (m_34 * m_41 - m_31 * m_44) +
-				m_24 * (m_31 * m_42 - m_32 * m_41));
-	float fD =
-		m_14 * (m_21 * (m_32 * m_43 - m_33 * m_42) +
-				m_22 * (m_33 * m_41 - m_31 * m_43) +
-				m_23 * (m_31 * m_42 - m_32 * m_41));
+	float fA = m_11 * (m_22 * (m_33 * m_44 - m_34 * m_43) +
+						m_23 * (m_34 * m_42 - m_32 * m_44) +
+						m_24 * (m_32 * m_43 - m_33 * m_42));
 
-	return fA - fB + fC - fD;
-		
+	float fB = m_12 * (m_21 * (m_33 * m_44 - m_34 * m_43) +
+						m_23 * (m_34 * m_41 - m_31 * m_44) +
+						m_24 * (m_31 * m_43 - m_33 * m_41));
+
+	float fC = m_13 * (m_21 * (m_32 * m_44 - m_34 * m_42) +
+						m_22 * (m_34 * m_41 - m_31 * m_44) +
+						m_24 * (m_31 * m_42 - m_32 * m_41));
+
+	float fD = m_14 * (m_21 * (m_32 * m_43 - m_33 * m_42) +
+						m_22 * (m_33 * m_41 - m_31 * m_43) +
+						m_23 * (m_31 * m_42 - m_32 * m_41));
+
+	return  fA - fB + fC - fD;
 }
 
 Matrix4 Matrix4::Inverse()  const
 {
 	const float fDet = Determinant();
-	if (fDet != 0.0f)
+	if ( fDet != 0.0f )
 	{
 		const float fInvDet = 1.f / fDet;
+
 		Matrix4 mat;
 		mat.m_11 = (m_22 * (m_33 * m_44 - m_34 * m_43) +
-			m_23 * (m_34 * m_42 - m_32 * m_44) +
-			m_24 * (m_32 * m_43 - m_33 * m_42)) * fInvDet;
+					 m_23 * (m_34 * m_42 - m_32 * m_44) +
+					 m_24 * (m_32 * m_43 - m_33 * m_42)) * fInvDet;
+
 		mat.m_21 = (m_21 * (m_33 * m_44 - m_34 * m_43) +
-			m_23 * (m_34 * m_41 - m_31 * m_44) +
-			m_24 * (m_31 * m_43 - m_33 * m_41)) * -fInvDet;
+					 m_23 * (m_34 * m_41 - m_31 * m_44) +
+					 m_24 * (m_31 * m_43 - m_33 * m_41)) * -fInvDet;
+
 		mat.m_31 = (m_21 * (m_32 * m_44 - m_34 * m_42) +
-			m_22 * (m_34 * m_41 - m_31 * m_44) +
-			m_24 * (m_31 * m_42 - m_32 * m_41)) * fInvDet;
+					 m_22 * (m_34 * m_41 - m_31 * m_44) +
+					 m_24 * (m_31 * m_42 - m_32 * m_41)) * fInvDet;
+
 		mat.m_41 = (m_21 * (m_32 * m_43 - m_33 * m_42) +
-			m_22 * (m_33 * m_41 - m_31 * m_43) +
-			m_23 * (m_31 * m_42 - m_32 * m_41)) * -fInvDet;
+					 m_22 * (m_33 * m_41 - m_31 * m_43) +
+					 m_23 * (m_31 * m_42 - m_32 * m_41)) * -fInvDet;
+
 		mat.m_12 = (m_12 * (m_33 * m_44 - m_34 * m_43) +
-			m_13 * (m_34 * m_42 - m_32 * m_44) +
-			m_14 * (m_32 * m_43 - m_33 * m_42)) * -fInvDet;
+					 m_13 * (m_34 * m_42 - m_32 * m_44) +
+					 m_14 * (m_32 * m_43 - m_33 * m_42)) * -fInvDet;
+
 		mat.m_22 = (m_11 * (m_33 * m_44 - m_34 * m_43) +
-			m_13 * (m_34 * m_41 - m_31 * m_44) +
-			m_14 * (m_31 * m_43 - m_33 * m_41)) * fInvDet;
+					 m_13 * (m_34 * m_41 - m_31 * m_44) +
+					 m_14 * (m_31 * m_43 - m_33 * m_41)) * fInvDet;
+
 		mat.m_32 = (m_11 * (m_32 * m_44 - m_34 * m_42) +
-			m_12 * (m_34 * m_41 - m_31 * m_44) +
-			m_14 * (m_31 * m_42 - m_32 * m_41)) * -fInvDet;
+					 m_12 * (m_34 * m_41 - m_31 * m_44) +
+					 m_14 * (m_31 * m_42 - m_32 * m_41)) * -fInvDet;
+
 		mat.m_42 = (m_11 * (m_32 * m_43 - m_33 * m_42) +
-			m_12 * (m_33 * m_41 - m_31 * m_43) +
-			m_13 * (m_31 * m_42 - m_32 * m_41)) * fInvDet;
+					 m_12 * (m_33 * m_41 - m_31 * m_43) +
+					 m_13 * (m_31 * m_42 - m_32 * m_41)) * fInvDet;
+
 		mat.m_13 = (m_12 * (m_23 * m_44 - m_24 * m_43) +
-			m_13 * (m_24 * m_42 - m_22 * m_44) +
-			m_14 * (m_22 * m_43 - m_23 * m_42)) * fInvDet;
+					 m_13 * (m_24 * m_42 - m_22 * m_44) +
+					 m_14 * (m_22 * m_43 - m_23 * m_42)) * fInvDet;
+
 		mat.m_23 = (m_11 * (m_23 * m_44 - m_24 * m_43) +
-			m_13 * (m_24 * m_41 - m_21 * m_44) +
-			m_14 * (m_21 * m_43 - m_23 * m_41)) * -fInvDet;
+					 m_13 * (m_24 * m_41 - m_21 * m_44) +
+					 m_14 * (m_21 * m_43 - m_23 * m_41)) * -fInvDet;
+
 		mat.m_33 = (m_11 * (m_22 * m_44 - m_24 * m_42) +
-			m_12 * (m_24 * m_41 - m_21 * m_44) +
-			m_14 * (m_21 * m_42 - m_22 * m_41)) * fInvDet;
+					 m_12 * (m_24 * m_41 - m_21 * m_44) +
+					 m_14 * (m_21 * m_42 - m_22 * m_41)) * fInvDet;
+
 		mat.m_43 = (m_11 * (m_22 * m_43 - m_23 * m_42) +
-			m_12 * (m_23 * m_41 - m_21 * m_43) +
-			m_13 * (m_21 * m_42 - m_22 * m_41)) * -fInvDet;
+					 m_12 * (m_23 * m_41 - m_21 * m_43) +
+					 m_13 * (m_21 * m_42 - m_22 * m_41)) * -fInvDet;
+
 		mat.m_14 = (m_12 * (m_23 * m_34 - m_24 * m_33) +
-			m_13 * (m_24 * m_32 - m_22 * m_34) +
-			m_14 * (m_22 * m_33 - m_23 * m_32)) * -fInvDet;
+					 m_13 * (m_24 * m_32 - m_22 * m_34) +
+					 m_14 * (m_22 * m_33 - m_23 * m_32)) * -fInvDet;
+
 		mat.m_24 = (m_11 * (m_23 * m_34 - m_24 * m_33) +
-			m_13 * (m_24 * m_31 - m_21 * m_34) +
-			m_14 * (m_21 * m_33 - m_23 * m_31)) * fInvDet;
+					 m_13 * (m_24 * m_31 - m_21 * m_34) +
+					 m_14 * (m_21 * m_33 - m_23 * m_31)) * fInvDet;
+
 		mat.m_34 = (m_11 * (m_22 * m_34 - m_24 * m_32) +
-			m_12 * (m_24 * m_31 - m_21 * m_34) +
-			m_14 * (m_21 * m_32 - m_22 * m_31)) * -fInvDet;
+					 m_12 * (m_24 * m_31 - m_21 * m_34) +
+					 m_14 * (m_21 * m_32 - m_22 * m_31)) * -fInvDet;
+
 		mat.m_44 = (m_11 * (m_22 * m_33 - m_23 * m_32) +
-			m_12 * (m_23 * m_31 - m_21 * m_33) +
-			m_13 * (m_21 * m_32 - m_22 * m_31)) * fInvDet;
+					 m_12 * (m_23 * m_31 - m_21 * m_33) +
+					 m_13 * (m_21 * m_32 - m_22 * m_31)) * fInvDet;
+
 		return mat;
 	}
 	else
@@ -455,7 +472,7 @@ Matrix4 Matrix4::LookAt(const Vector3& a_v3EyePos, const Vector3& a_v3Target, co
 	mat.m_11 = vRight.x;	mat.m_21 = vRight.y;	mat.m_31 = vRight.z;	mat.m_41 = 0.0f;
 
 	//y-axis column
-	mat.m_12 = vUp.x;	mat.m_22 = vUp.y;	mat.m_32 = vUp.z;	mat.m_41 = 0.0f;
+	mat.m_12 = vUp.x;	mat.m_22 = vUp.y;	mat.m_32 = vUp.z;	mat.m_42 = 0.0f;
 
 	//z-axis column
 	mat.m_13 = -vForward.x;	mat.m_23 = -vForward.y;	mat.m_33 = -vForward.z;	mat.m_43 = 0.0f;

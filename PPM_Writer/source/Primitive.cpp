@@ -25,7 +25,7 @@ Vector3 Primitive::GetPosition() const
 
 void Primitive::SetPosition(const Vector3& a_v3)
 {
-	m_Transform.SetColumn(3, a_v3);
+	m_Transform.SetColumn(3, Vector4(a_v3, 1.f));
 }
 
 Vector3 Primitive::GetScale() const

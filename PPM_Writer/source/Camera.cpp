@@ -8,7 +8,7 @@ Camera::Camera()
 
 void Camera::setPosition(Vector3 a_v3Pos)
 {
-	m_Transform.SetColumn(3, a_v3Pos);
+	m_Transform.SetColumn(3, Vector4(a_v3Pos, 1.f));
 }
 
 Vector3 Camera::GetPosition()
@@ -19,16 +19,16 @@ Vector3 Camera::GetPosition()
 
 void Camera::SetPerspective(float a_fieldOfView, float a_aspectRatio, float a_near, float a_far)
 {
-	a_aspectRatio = a_aspectRatio;
+	m_aspectRatio = a_aspectRatio;
 	m_fov = a_fieldOfView * MathLib::DEG2RAD;
 	m_zNear = a_near;
 	m_zFar = a_far;
-	m_projectionMatrix.Perspective(m_fov, a_aspectRatio, a_near, a_far);
+	m_projectionMatrix.Perspective(m_fov, m_aspectRatio, m_zNear, m_zFar);
 }
 
 void Camera::SetOrtographic(float a_left, float a_right, float a_top, float a_bottom, float a_near, float a_far)
 {
-	a_aspectRatio = (a_right - a_left) / (a_bottom - a_top);
+	m_aspectRatio = (a_right - a_left) / (a_bottom - a_top);
 	m_zNear = a_near;
 	m_zFar = a_far;
 	m_projectionMatrix.Ortographic(a_left, a_right, a_top, a_bottom, a_near, a_far);
