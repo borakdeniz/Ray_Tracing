@@ -87,8 +87,11 @@ int main(int argv, char* argc[]) {
 	mainCamera.setPosition(Vector3(0.f, 0.f, 5.f));
 	mainCamera.LookAt(Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f));
 
+	mainScene.SetCamera(&mainCamera);
+
 	Random::SetSeed(time(nullptr));
-	int raysPerPixel = 50;
+	int raysPerPixel = 100;
+	int rayBounces = 50;
 	for (int i = 0; i < 20; i++)
 	{
 		std::clog << "Random Int: " << Random::RandInt() << std::endl;
@@ -104,6 +107,7 @@ int main(int argv, char* argc[]) {
 
 	//Put a light in the scene
 	DirectionalLight dl = DirectionalLight(Matrix4::IDENTITY, Vector3(0.5f, 0.f, 0.5f), Vector3(-0.5773f, -0.5773f, -0.5773f));
+	mainScene.AddLight(&dl);
 
 	//Define a sphere origin and radius
 	Ellipsoid s1(Vector3(0.f, 0.f, -2.5f), 0.5f);
@@ -146,21 +150,8 @@ int main(int argv, char* argc[]) {
 				Ray viewRay = mainCamera.CastRay(screenSpacePos);
 
 				//convert ray direction into colour space 0->1
-				Vector3 hitPos = Vector3(0.f, 0.f, 0.f);
-				Vector3 surfNormal = Vector3(0.f, 0.f, 0.f);
-
-				IntersectionResponse ir;
-				if (mainScene.IntersectTest(viewRay, ir))
-				{
-					//calculate lighting
-					rayColour += dl.CalculateLighthing(ir, mainCamera.GetPosition());
-				}
-				else
-				{
-					Vector3 rayToColour = RaytoColour(viewRay);
-					//Use Lerp to get colour between white and blue based on the vertical value of the rayColour
-					rayColour += Lerp(Vector3(1.f, 1.f, 1.f), Vector3(0.4f, 0.7f, 1.f), rayToColour.y);
-				}
+				
+				rayColour += mainScene.IntersectTest(viewRay, rayBounces);
 			}
 			rayColour = rayColour * (1.f / (float)raysPerPixel);
 			//write to output

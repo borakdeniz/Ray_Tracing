@@ -139,3 +139,8 @@ const Vector3& Vector3:: operator += (const Vector3& a_v3)
 	x += a_v3.x;	y += a_v3.y;	z += a_v3.z;
 	return *this;
 }
+
+Vector3 Vector3::operator	*	(const Vector3& a_v3) const
+{
+	return Vector3(x * a_v3.x, y * a_v3.y, z * a_v3.z);
+}

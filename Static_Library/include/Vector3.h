@@ -46,13 +46,17 @@ public:
 
 	const Vector3& operator	+=		(const Vector3& a_v3);
 
+	
+
 	//Dot Product Funtionality
 
 	float				Dot			(const Vector3& a_v3) const;
 
 	friend float		Dot			(const Vector3& a_v3A, const Vector3& a_v3B);
 
-	Vector3 operator *				(const float& a_scalar) const; 
+	Vector3 operator	*			(const float& a_scalar) const; 
+
+	Vector3 operator	*			(const Vector3& a_v3) const;
 
 	friend Vector3		Lerp		(const Vector3& a_v3A, const Vector3& a_v3B, const float a_t);
 
