@@ -4,14 +4,15 @@
 //Default Constructor - (initialiser list)
 Ray::Ray(): m_v3Origin(0.f, 0.f, 0.f),
 			m_v3Direction(0.f, 0.f, 1.f),
-			m_MaxLength(std::numeric_limits<float>::max())
+			m_MaxLength(std::numeric_limits<float>::max()),
+			m_MinLength(0.f)
 {
 }
 
 
 //Constructor with Origin and Direction Values
-Ray::Ray(const Vector3& a_v3Origin, const Vector3& a_v3Direction, float a_maxLength): 
-	m_v3Origin(a_v3Origin), m_v3Direction(a_v3Direction), m_MaxLength(a_maxLength)
+Ray::Ray(const Vector3& a_v3Origin, const Vector3& a_v3Direction, float a_maxLength, float a_minLength):
+	m_v3Origin(a_v3Origin), m_v3Direction(a_v3Direction), m_MaxLength(a_maxLength), m_MinLength(a_minLength)
 {
 	if (m_v3Direction.Length() > 1.f)
 	{
@@ -21,7 +22,7 @@ Ray::Ray(const Vector3& a_v3Origin, const Vector3& a_v3Direction, float a_maxLen
 
 //Copy Constructor
 Ray::Ray(const Ray& a_Ray):
-	m_v3Origin(a_Ray.m_v3Origin), m_v3Direction(a_Ray.m_v3Direction), m_MaxLength(a_Ray.m_MaxLength)
+	m_v3Origin(a_Ray.m_v3Origin), m_v3Direction(a_Ray.m_v3Direction), m_MaxLength(a_Ray.m_MaxLength), m_MinLength(a_Ray.m_MinLength)
 {
 	if (m_v3Direction.Length() > 1.f)
 	{
@@ -39,6 +40,10 @@ Vector3 Ray::PointAt(float a_distance)
 	if (a_distance > m_MaxLength)
 	{
 		a_distance = m_MaxLength;
+	}
+	if (a_distance < m_MinLength)
+	{
+		a_distance = m_MinLength;
 	}
 	return m_v3Origin + (m_v3Direction * a_distance);
 }

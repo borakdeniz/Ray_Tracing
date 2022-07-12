@@ -30,7 +30,7 @@ void displayUsage(char* a_path) {
 int main(int argv, char* argc[]) {
 
 	//Setting up the dimensions of the image
-	int imageWidth = 512;
+	int imageWidth = 524;
 	int imageHeight = 256;
 	int channelColours = 255;
 
@@ -87,7 +87,6 @@ int main(int argv, char* argc[]) {
 	mainCamera.setPosition(Vector3(0.f, 0.f, 5.f));
 	mainCamera.LookAt(Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f));
 
-	mainScene.SetCamera(&mainCamera);
 
 	Random::SetSeed(time(nullptr));
 	int raysPerPixel = 100;
@@ -107,7 +106,6 @@ int main(int argv, char* argc[]) {
 
 	//Put a light in the scene
 	DirectionalLight dl = DirectionalLight(Matrix4::IDENTITY, Vector3(0.5f, 0.f, 0.5f), Vector3(-0.5773f, -0.5773f, -0.5773f));
-	mainScene.AddLight(&dl);
 
 	//Define a sphere origin and radius
 	Ellipsoid s1(Vector3(0.f, 0.f, -2.5f), 0.5f);
@@ -125,7 +123,8 @@ int main(int argv, char* argc[]) {
 	mainScene.AddObject(&s1);
 	mainScene.AddObject(&s2);
 	mainScene.AddObject(&s3);
-
+	mainScene.AddLight(&dl);
+	mainScene.SetCamera(&mainCamera);
 
 	//get reciprocal of image dimensions
 	float invWidth = 1.f / (float)imageWidth;
@@ -142,16 +141,15 @@ int main(int argv, char* argc[]) {
 			for (int p = 0; p < raysPerPixel; p++) 
 			{
 				float screenSpaceY = 1.f - 2.f * ((float)i + Random::RandFloat()) * invHeight;
+				
 				//Get the current pixel in screen space cooridnates( in range -1 to 1 )
 				float screenSpaceX = 2.f * ((float)j + Random::RandFloat()) * invWidth - 1.f;
 				Vector2 screenSpacePos = Vector2(screenSpaceX, screenSpaceY);
 
 				//Create a Ray with origin at the camera and direction into the near plane offset
-				Ray viewRay = mainCamera.CastRay(screenSpacePos);
 
 				//convert ray direction into colour space 0->1
-				
-				rayColour += mainScene.IntersectTest(viewRay, rayBounces);
+				rayColour += mainScene.CastRay(screenSpacePos);
 			}
 			rayColour = rayColour * (1.f / (float)raysPerPixel);
 			//write to output

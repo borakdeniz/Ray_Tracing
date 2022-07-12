@@ -30,3 +30,8 @@ void Light::SetPosition(const Vector3& a_v3)
 {
 	m_Transform.SetColumn(3, a_v3);
 }
+
+Vector3 Light::GetDirectionToLight(const Vector3& a_point) const
+{
+	return Normalize(GetPosition() - a_point);
+}

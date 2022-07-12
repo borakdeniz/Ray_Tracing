@@ -34,7 +34,7 @@ Vector3	DirectionalLight::GetDirection() const
 
 
 
-ColourRGB DirectionalLight::CalculateLighthing(IntersectionResponse& a_ir, const Vector3& a_eyePos) const
+ColourRGB DirectionalLight::CalculateLighthing(IntersectionResponse& a_ir, const Vector3& a_eyePos, float a_shadowFactor) const
 {
 	//Treat all surfaces as being the same under this light
 	ColourRGB ambient = a_ir.colour * 0.1f;										//Get ambient colour for surface
@@ -50,5 +50,10 @@ ColourRGB DirectionalLight::CalculateLighthing(IntersectionResponse& a_ir, const
 	float specularFactor = std::powf(MathLib::Max(0.f, Dot(reflectionVec, lightDirection)), 64.f);
 	ColourRGB specular = a_ir.colour * 0.9f * specularFactor;
 
-	return ambient + diffuse + specular;
+	return ambient + (diffuse + specular) * a_shadowFactor;
+}
+
+Vector3 DirectionalLight::GetDirectionToLight(const Vector3& a_point) const
+{
+	return GetDirection();
 }

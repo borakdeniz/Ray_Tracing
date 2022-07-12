@@ -4,7 +4,7 @@
 #include <Camera.h>
 #include <Random.h>
 
-Scene::Scene()
+Scene::Scene(): m_pCamera(nullptr)
 {
 	m_objects.clear();
 	m_lights.clear();
@@ -50,9 +50,9 @@ void Scene::RemoveLight(const Light* a_light)
 }
 
 
-bool Scene::HitTest(const Ray& a_ray, IntersectionResponse& a_ir)
+bool Scene::HitTest(const Ray& a_ray, IntersectionResponse& a_ir) const
 {
-	float intersectDist = FLT_MAX;
+	float intersectDist = a_ray.MaxDistance();
 	bool intersectionOccured = false;
 	IntersectionResponse objectIntersection;
 	for (auto iter = m_objects.begin(); iter != m_objects.end(); iter++)
@@ -60,11 +60,14 @@ bool Scene::HitTest(const Ray& a_ray, IntersectionResponse& a_ir)
 		const Primitive* object = (*iter);
 		if (object->IntersectTest(a_ray, objectIntersection))
 		{
-			intersectionOccured = true;
-			if (objectIntersection.distance < intersectDist)
-			{
-				intersectDist = objectIntersection.distance;
-				a_ir = objectIntersection;
+			if (objectIntersection.distance > a_ray.MinLength()) {
+
+				intersectionOccured = true;
+				if (objectIntersection.distance < intersectDist)
+				{
+					intersectDist = objectIntersection.distance;
+					a_ir = objectIntersection;
+				}
 			}
 		}
 	}
@@ -94,12 +97,43 @@ ColourRGB Scene::IntersectTest(const Ray& a_ray, int bounces)
 			//for all lights in the scene sum the effects the lights have on the object
 			for (auto lightIter = m_lights.begin(); lightIter != m_lights.end(); lightIter++)
 			{
-				rayColour += (*lightIter)->CalculateLighthing(ir, m_pCamera->GetPosition());
+				Ray shadowRay = Ray( ir.HitPos, -(*lightIter)->GetDirectionToLight(ir.HitPos), 0.001f);
+				IntersectionResponse sr;
+				float shadowValue = (!HitTest(shadowRay, sr));
+				rayColour += (*lightIter)->CalculateLighthing(ir, m_pCamera->GetPosition()) * shadowValue;
 			}
-			return rayColour * 0.5f;
+			return rayColour;
 		}
 	}
 	Vector3 rayToColour = RaytoColour(a_ray);
 	rayToColour = Lerp(Vector3(1.f, 1.f, 1.f), Vector3(0.4f, 0.7f, 1.f), rayToColour.y);
 	return rayToColour;
+}
+
+Vector3 Scene::CastRay(const Vector2& a_screenSpacePos) const
+{
+	//Create a Ray with origin at the camera and direction into the near plane offset
+	Ray viewRay = m_pCamera->CastRay(a_screenSpacePos);
+	//convert ray direction into colour space 0->1
+
+	IntersectionResponse ir;
+	if (HitTest(viewRay, ir))
+	{
+		Vector3 rayColour = Vector3(0.f, 0.f, 0.f);
+		
+		//For all lights in the scene sum the effects the lights have one the object
+		for (auto lightIter = m_lights.begin(); lightIter!= m_lights.end(); lightIter++)
+		{
+			rayColour += (*lightIter)->CalculateLighthing(ir, m_pCamera->GetPosition());
+		}
+		return rayColour;
+	}
+	else
+	{
+		Vector3 rayToColour = RaytoColour(viewRay);
+
+		//Use Lerp to get a colour between white and blue based on the vertical value of the rayColour
+		rayToColour = Lerp(Vector3(1.f, 1.f, 1.f), Vector3(0.4f, 0.7f, 1.f), rayToColour.y);
+		return rayToColour;
+	}
 }

@@ -24,10 +24,12 @@ public:
 	void AddLight(const Light* a_light);
 	void RemoveLight(const Light* a_light);
 
+	Vector3 CastRay(const Vector2& a_screenSpacePos) const;
+
 	//Intersection Test
 	ColourRGB IntersectTest(const Ray& a_ray, int bounces = 10);
 
-	bool HitTest(const Ray& a_ray, IntersectionResponse& ir);
+	bool HitTest(const Ray& a_ray, IntersectionResponse& ir) const;
 
 	void SetCamera(Camera* a_pCamera) { m_pCamera = a_pCamera; }
 
