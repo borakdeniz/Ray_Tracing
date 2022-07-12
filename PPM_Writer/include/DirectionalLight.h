@@ -9,7 +9,7 @@ public:
 	virtual ~DirectionalLight();
 
 	//Override the base Light class' calculate lighting function
-	ColourRGB	CalculateLighthing		(const Vector3& a_hitPoint, const Vector3& a_eyePos, const Vector3& a_normal) const override;
+	ColourRGB	CalculateLighthing		(IntersectionResponse& a_ir, const Vector3& a_eyePos) const override;
 
 	//Functionality to Set and Get the direction of the light
 	void		SetDirection			(const Vector3& a_direction, const Vector3& a_up = Vector3(0.f, 1.f, 0.f));

@@ -1,5 +1,6 @@
 #include <libMath.h>
 #include <ColourRGB.h>
+#include <IntersectionResponse.h>
 
 class Light
 {
@@ -10,7 +11,7 @@ public:
 	~Light() = default;
 
 	//Each type of light will need to calculate it's own lighting outcome based off the type of light it is
-	virtual ColourRGB	CalculateLighthing	(const Vector3& a_hitPoint, const Vector3& a_eyePos, const Vector3& a_normal) const = 0;
+	virtual ColourRGB	CalculateLighthing	(IntersectionResponse& a_ir, const Vector3& a_eyePos) const = 0;
 	
 	//Get and Set Lights matrix
 	Matrix4				GetTransform		()	const;

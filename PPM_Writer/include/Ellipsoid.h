@@ -8,8 +8,8 @@ public:
 	Ellipsoid(const Vector3& a_pos, const float& a_radius);
 	virtual  ~Ellipsoid();
 
-	bool IntersectTest(const Ray& a_ray, Vector3& a_hitPos, Vector3& a_surfNormal) const override;
-
+	bool IntersectTest(const Ray& a_ray,IntersectionResponse& a_ir) const override;
+	Vector3 m_colour;
 private:
 	float m_radius;
 };

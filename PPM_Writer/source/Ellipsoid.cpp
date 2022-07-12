@@ -14,7 +14,7 @@ Ellipsoid::~Ellipsoid()
 {
 }
 
-bool Ellipsoid::IntersectTest(const Ray& a_ray, Vector3& a_hitPos, Vector3& a_surfNormal) const
+bool Ellipsoid::IntersectTest(const Ray& a_ray, IntersectionResponse& a_ir) const
 {
 	Matrix4 normalMatrix = m_Transform.GetTranspose().Inverse();
 
@@ -39,11 +39,12 @@ bool Ellipsoid::IntersectTest(const Ray& a_ray, Vector3& a_hitPos, Vector3& a_su
 		else if (i1 > 0.f) { dist = i1; }
 		else { return false; }
 		Vector4 hp = rayOrigin + rayDir * dist;
-		a_surfNormal = Normalize(hp.xyz());
+		Vector3 sn = Normalize(hp.xyz());
 		hp = m_Transform * hp;
-		a_hitPos = Vector3(hp.x, hp.y, hp.z);
-		
-		a_surfNormal = Normalize(normalMatrix * a_surfNormal);
+		a_ir.HitPos = Vector3(hp.x, hp.y, hp.z);
+		a_ir.SurfaceNormal = Normalize(normalMatrix * sn);
+		a_ir.distance = (a_ray.Origin() - hp.xyz()).Length();
+		a_ir.colour = m_colour;
 
 		return true;
 	}
