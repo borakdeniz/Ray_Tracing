@@ -6,6 +6,7 @@
 #include <Camera.h>
 #include <Ellipsoid.h>
 #include <DirectionalLight.h>
+#include <time.h>
 
 
 typedef enum input_args
@@ -83,6 +84,15 @@ int main(int argv, char* argc[]) {
 	mainCamera.setPosition(Vector3(0.f, 0.f, 5.f));
 	mainCamera.LookAt(Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f));
 
+	Random::SetSeed(time(nullptr));
+	int raysPerPixel = 50;
+	for (int i = 0; i < 20; i++)
+	{
+		std::clog << "Random Int: " << Random::RandInt() << std::endl;
+		std::clog << "Random Float: " << Random::RandFloat() << std::endl;
+		std::clog << "Random Int Range 0 -> 100 " << Random::RandRange(0, 100) << std::endl;
+		std::clog << "Random Float Range -0.5 -> 0.5: " << Random::RandRange(-0.5f, 0.5f) << std::endl;
+	}
 
 	//output the Image Header data
 	std::cout << "P3" << std::endl;
@@ -94,10 +104,10 @@ int main(int argv, char* argc[]) {
 
 	//Define a sphere origin and radius
 	Ellipsoid s1(Vector3(-1.f, -1.f, -15.f), 3.f);
-	s1.SetScale(Vector3(1.f, 2.f, 1.f));
+	//s1.SetScale(Vector3(1.f, 2.f, 1.f));
 
 	//HELP
-	s1.SetShear(2.f, 0.f, 0.3f, 0.f, 2.f, 0.f);
+	//s1.SetShear(2.f, 0.f, 0.3f, 0.f, 2.f, 0.f);
 	
 
 	//get reciprocal of image dimensions
@@ -109,34 +119,36 @@ int main(int argv, char* argc[]) {
 	{
 		std::clog << "\rCurrently rendering scanline " << i << " of " << imageHeight << std::flush;
 		//for each pixel in a row
-		//Calculate Screen Space Y
-		float screenSpaceY = 1.f - 2.f * ((float)i + 0.5f) * invHeight;
-		
 		for (int j = 0; j < imageWidth; j++)
 		{
-			//Get the current pixel in screen space cooridnates( in range -1 to 1 )
-			float screenSpaceX = 2.f * ((float)j + 0.5f) * invWidth - 1.f;
-			Vector2 screenSpacePos = Vector2(screenSpaceX, screenSpaceY);
-
-			//Create a Ray with origin at the camera and direction into the near plane offset
-			Ray viewRay = mainCamera.CastRay(screenSpacePos);
-
-			//convert ray direction into colour space 0->1
-			ColourRGB rayColour;
-			Vector3 hitPos = Vector3(0.f, 0.f, 0.f);
-			Vector3 surfNormal = Vector3(0.f, 0.f, 0.f);
-
-			if (s1.IntersectTest(viewRay,hitPos, surfNormal))
+			ColourRGB rayColour(0.f, 0.f, 0.f);
+			for (int p = 0; p < raysPerPixel; p++) 
 			{
-				//calculate lighting
-				rayColour = dl.CalculateLighthing(hitPos, mainCamera.GetPosition(), surfNormal);
+				float screenSpaceY = 1.f - 2.f * ((float)i + Random::RandFloat()) * invHeight;
+				//Get the current pixel in screen space cooridnates( in range -1 to 1 )
+				float screenSpaceX = 2.f * ((float)j + Random::RandFloat()) * invWidth - 1.f;
+				Vector2 screenSpacePos = Vector2(screenSpaceX, screenSpaceY);
+
+				//Create a Ray with origin at the camera and direction into the near plane offset
+				Ray viewRay = mainCamera.CastRay(screenSpacePos);
+
+				//convert ray direction into colour space 0->1
+				Vector3 hitPos = Vector3(0.f, 0.f, 0.f);
+				Vector3 surfNormal = Vector3(0.f, 0.f, 0.f);
+
+				if (s1.IntersectTest(viewRay, hitPos, surfNormal))
+				{
+					//calculate lighting
+					rayColour += dl.CalculateLighthing(hitPos, mainCamera.GetPosition(), surfNormal);
+				}
+				else
+				{
+					Vector3 rayToColour = RaytoColour(viewRay);
+					//Use Lerp to get colour between white and blue based on the vertical value of the rayColour
+					rayColour += Lerp(Vector3(1.f, 1.f, 1.f), Vector3(0.4f, 0.7f, 1.f), rayToColour.y);
+				}
 			}
-			else
-			{
-				rayColour = RaytoColour(viewRay);
-				//Use Lerp to get colour between white and blue based on the vertical value of the rayColour
-				rayColour = Lerp(Vector3(1.f, 1.f, 1.f), Vector3(0.4f, 0.7f, 1.f), rayColour.y);
-			}
+			rayColour = rayColour * (1.f / (float)raysPerPixel);
 			//write to output
 			WriteColourRGB(std::cout, rayColour);
 		}

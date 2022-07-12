@@ -133,3 +133,9 @@ Vector3		Reflect(const Vector3& a_v3A, const Vector3& a_v3B)
 	Vector3 reflect = a_v3A - (a_v3B * 2.f * Dot(a_v3A, a_v3B));
 	return reflect;
 }
+
+const Vector3& Vector3:: operator += (const Vector3& a_v3)
+{
+	x += a_v3.x;	y += a_v3.y;	z += a_v3.z;
+	return *this;
+}

@@ -16,7 +16,7 @@ public:
 	//\ Normalise the Vector - modifies member variables (non const function)
 	//\=========================================================================
 	void				Normalize();
-	friend    Vector3	Normalize(const Vector3& a_vec);
+	friend    Vector3	Normalize	(const Vector3& a_vec);
 
 	//Destructor
 
@@ -24,9 +24,9 @@ public:
 #pragma endregion
 #pragma region Operator Overloads
 	//Equivalance Operators
-	bool operator == (const Vector3& a_v3) const;
+	bool operator ==				(const Vector3& a_v3) const;
 
-	bool operator != (const Vector3& a_v3) const;
+	bool operator !=				(const Vector3& a_v3) const;
 
 	//Negate Operator
 
@@ -34,34 +34,36 @@ public:
 
 	//Subtraction Operator
 
-	Vector3 operator - (const Vector3& a_v3) const;
+	Vector3 operator -				(const Vector3& a_v3) const;
 
-	Vector3 operator - (const float a_scalar) const;
+	Vector3 operator -				(const float a_scalar) const;
 
 	//Addition Operator
 
-	Vector3 operator + (const Vector3& a_v3) const;
+	Vector3 operator +				(const Vector3& a_v3) const;
 
-	Vector3 operator + (const float a_scalar) const;
+	Vector3 operator +				(const float a_scalar) const;
+
+	const Vector3& operator	+=		(const Vector3& a_v3);
 
 	//Dot Product Funtionality
 
-	float Dot(const Vector3& a_v3) const;
+	float				Dot			(const Vector3& a_v3) const;
 
-	friend float Dot(const Vector3& a_v3A, const Vector3& a_v3B);
+	friend float		Dot			(const Vector3& a_v3A, const Vector3& a_v3B);
 
-	Vector3 operator * (const float& a_scalar) const; 
+	Vector3 operator *				(const float& a_scalar) const; 
 
-	friend Vector3 Lerp(const Vector3& a_v3A, const Vector3& a_v3B, const float a_t);
+	friend Vector3		Lerp		(const Vector3& a_v3A, const Vector3& a_v3B, const float a_t);
 
 	//\=========================================================================
 	//\ Cross Product
 	//\=========================================================================
-	Vector3					  Cross(const Vector3& a_v3) const;
-	friend Vector3            Cross(const Vector3& a_v3a, const Vector3& a_v3b);
+	Vector3				Cross		(const Vector3& a_v3) const;
+	friend Vector3      Cross		(const Vector3& a_v3a, const Vector3& a_v3b);
 
 	//Reflect one vector around another
-	friend Vector3	Reflect(const Vector3& a_v3A, const Vector3& a_v3B);
+	friend Vector3		Reflect		(const Vector3& a_v3A, const Vector3& a_v3B);
 #pragma endregion
 
 };
