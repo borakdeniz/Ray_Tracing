@@ -128,3 +128,8 @@ Vector3    Cross(const Vector3& a_v3a, const Vector3& a_v3b)
 	return a_v3a.Cross(a_v3b);
 }
 
+Vector3		Reflect(const Vector3& a_v3A, const Vector3& a_v3B)
+{
+	Vector3 reflect = a_v3A - (a_v3B * 2.f * Dot(a_v3A, a_v3B));
+	return reflect;
+}

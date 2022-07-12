@@ -1,6 +1,6 @@
 #include <Primitive.h>
 
-Primitive::Primitive() : m_Transform(Matrix4::IDENTITY), m_Scale()
+Primitive::Primitive() : m_Transform(Matrix4::IDENTITY), m_Scale(), m_Shear()
 {
 }
 
@@ -39,4 +39,11 @@ void Primitive::SetScale(const Vector3& a_v3)
 	Matrix4 scale;
 	scale.Scale(a_v3);
 	m_Transform = m_Transform * scale;
+}
+
+void Primitive::SetShear(float xy, float xz, float yx, float yz, float zx, float zy)
+{
+	Matrix4 shear;
+	shear.Shear( xy,  xz,  yx,  yz,  zx, zy);
+	m_Shear = shear;
 }

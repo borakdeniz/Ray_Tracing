@@ -19,8 +19,10 @@ public:
 	Vector3 GetScale() const;
 	void SetScale(const Vector3& a_v3);
 
+	void		SetShear(float xy, float xz, float yx, float yz, float zx, float zy);
 protected:
 	Matrix4 m_Transform;
 	Vector3 m_Scale;
+	Matrix4 m_Shear;
 
 };

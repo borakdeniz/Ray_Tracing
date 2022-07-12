@@ -12,4 +12,6 @@ namespace MathLib
 #include <Matrix3.h>
 #include <Matrix4.h>
 #include <Ray.h>
+#include <MathUtils.h>
+#include <Random.h>
 

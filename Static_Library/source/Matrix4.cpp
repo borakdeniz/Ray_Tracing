@@ -494,3 +494,29 @@ Vector3 Matrix4::operator*(const Vector3& a_v3) const
 }
 
 
+void Matrix4::Shear(float xy, float xz, float yx, float yz, float zx, float zy)
+{
+	m_11 = 1.f;	m_12 = xy;	m_13 = xz;	m_14 = 0.f;
+	m_21 = yx;	m_22 = 1.f;	m_23 = yz;	m_24 = 0.f;
+	m_31 = xz;	m_32 = zy;	m_33 = 1.f;	m_34 = 0.f;
+	m_41 = 1.f;	m_42 = 0.f;	m_43 = 0.f;	m_44 = 1.f;
+}
+
+void Matrix4::Orthonormalise()
+{
+	Vector3 xBasis(m_11, m_21, m_31);		//Current Right
+	Vector3 yBasis(m_12, m_22, m_32);		//Current Up
+	Vector3 zBasis(m_13, m_23, m_33);		//Current Forward
+
+	//Assumption is that the forward vector is the primary axis
+	yBasis = yBasis - (zBasis * Dot(zBasis, yBasis));
+	yBasis.Normalize();
+	xBasis = Cross(yBasis, zBasis);
+	xBasis.Normalize();
+
+	//Set orthogonal vector axis back into the matrix columns
+	m_11 = xBasis.x;	m_21 = xBasis.y;	m_31 = xBasis.z;
+	m_12 = yBasis.x;	m_22 = yBasis.y;	m_32 = yBasis.z;
+	m_13 = zBasis.x;	m_23 = zBasis.y;	m_33 = zBasis.z;
+	
+}

@@ -60,6 +60,8 @@ public:
 	Vector3					  Cross(const Vector3& a_v3) const;
 	friend Vector3            Cross(const Vector3& a_v3a, const Vector3& a_v3b);
 
+	//Reflect one vector around another
+	friend Vector3	Reflect(const Vector3& a_v3A, const Vector3& a_v3B);
 #pragma endregion
 
 };

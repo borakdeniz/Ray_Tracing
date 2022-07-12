@@ -19,8 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\MathUtils.cpp" />
     <ClCompile Include="source\Matrix3.cpp" />
     <ClCompile Include="source\Matrix4.cpp" />
+    <ClCompile Include="source\Random.cpp" />
     <ClCompile Include="source\Ray.cpp" />
     <ClCompile Include="source\Vector2.cpp" />
     <ClCompile Include="source\Vector3.cpp" />
@@ -28,8 +30,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\libMath.h" />
+    <ClInclude Include="include\MathUtils.h" />
     <ClInclude Include="include\Matrix3.h" />
     <ClInclude Include="include\Matrix4.h" />
+    <ClInclude Include="include\Random.h" />
     <ClInclude Include="include\Ray.h" />
     <ClInclude Include="include\Vector2.h" />
     <ClInclude Include="include\Vector3.h" />

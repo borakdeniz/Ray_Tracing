@@ -102,7 +102,11 @@ public:
 
 
 	//Camera Projection Functions
-	bool		Perspective(float fRafFovY, float fAspectRatio, float fZNear, float fZFar);
-	bool		Ortographic(float fLeft, float fRight, float fTop, float fBottom, float fNear, float fFar);
-	static		Matrix4		LookAt(const Vector3& a_v3EyePos, const Vector3& a_v3Target, const Vector3& a_v3Up);
+	bool		Perspective		(float fRafFovY, float fAspectRatio, float fZNear, float fZFar);
+	bool		Ortographic		(float fLeft, float fRight, float fTop, float fBottom, float fNear, float fFar);
+	static	Matrix4		LookAt	(const Vector3& a_v3EyePos, const Vector3& a_v3Target, const Vector3& a_v3Up);
+
+	//Shear Matrix
+	void		Shear			(float xy, float xz, float yx, float yz, float zx, float zy);
+	void		Orthonormalise();
 };

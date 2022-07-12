@@ -5,6 +5,7 @@
 #include <ColourRGB.h>
 #include <Camera.h>
 #include <Ellipsoid.h>
+#include <DirectionalLight.h>
 
 
 typedef enum input_args
@@ -88,8 +89,16 @@ int main(int argv, char* argc[]) {
 	std::cout << imageWidth << ' ' << imageHeight << std::endl;
 	std::cout << channelColours << std::endl;
 
+	//Put a light in the scene
+	DirectionalLight dl = DirectionalLight(Matrix4::IDENTITY, Vector3(0.5f, 0.f, 0.5f), Vector3(0.f, -0.707f, -0.707f));
+
 	//Define a sphere origin and radius
 	Ellipsoid s1(Vector3(-1.f, -1.f, -15.f), 3.f);
+	s1.SetScale(Vector3(1.f, 2.f, 1.f));
+
+	//HELP
+	s1.SetShear(2.f, 0.f, 0.3f, 0.f, 2.f, 0.f);
+	
 
 	//get reciprocal of image dimensions
 	float invWidth = 1.f / (float)imageWidth;
@@ -119,7 +128,8 @@ int main(int argv, char* argc[]) {
 
 			if (s1.IntersectTest(viewRay,hitPos, surfNormal))
 			{
-				rayColour = (surfNormal + 1.f) * 0.5f;
+				//calculate lighting
+				rayColour = dl.CalculateLighthing(hitPos, mainCamera.GetPosition(), surfNormal);
 			}
 			else
 			{
