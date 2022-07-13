@@ -31,8 +31,8 @@ void displayUsage(char* a_path) {
 int main(int argv, char* argc[]) {
 
 	//Setting up the dimensions of the image
-	int imageWidth = 1920;
-	int imageHeight = 1080;
+	int imageWidth = 526;
+	int imageHeight = 256;
 	int channelColours = 255;
 
 	//output file name
@@ -121,7 +121,7 @@ int main(int argv, char* argc[]) {
 	s3.SetMaterial(&yellowRough);
 	s3.SetScale(Vector3(1.f, 1.f, 1.f));
 
-	Ellipsoid s4(Vector3(1.f, 0.5f, -2.5f), 0.5f);
+	Ellipsoid s4(Vector3(1.f, 0.f, -2.5f), 0.5f);
 	s4.SetMaterial(&lightBlueSmooth);
 	s4.SetScale(Vector3(1.f, 1.f, 1.f));
 	

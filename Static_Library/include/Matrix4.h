@@ -52,36 +52,36 @@ public:
 	~Matrix4();
 
 	//Component Access Operators
-	float&		operator()		(int a_iColumn, int a_iRow);
-	float		operator()		(int a_iColumn, int a_iRow) const;
+	float&				operator()		(int a_iColumn, int a_iRow);
+	float				operator()		(int a_iColumn, int a_iRow) const;
 
 	//Column and Row Access 
-	void		SetColumn(int a_iCol, const Vector4& a_vCol);
-	Vector4		GetColumn(int a_iCol) const;
-	Vector3		GetColumnV3(int a_iCol) const;
+	void		SetColumn				(int a_iCol, const Vector4& a_vCol);
+	Vector4		GetColumn				(int a_iCol) const;
+	Vector3		GetColumnV3				(int a_iCol) const;
 
 	//Equivalance Operator
-	bool		operator ==		(const Matrix4& a_m4) const;
-	bool		operator !=		(const Matrix4& a_m4) const;
+	bool				operator ==		(const Matrix4& a_m4) const;
+	bool				operator !=		(const Matrix4& a_m4) const;
 
 	//Overload operators for Substraction
-	Matrix4		operator -		(const Matrix4& a_m4) const;
-	const Matrix4& operator -=		(const Matrix4& a_m4);
+	Matrix4				operator -		(const Matrix4& a_m4) const;
+	const Matrix4&		operator -=		(const Matrix4& a_m4);
 
 	//Overload operators for Addition
-	Matrix4		operator +		(const Matrix4& a_m4) const;
-	const Matrix4& operator +=		(const Matrix4& a_m4);
+	Matrix4				operator +		(const Matrix4& a_m4) const;
+	const Matrix4&		operator +=		(const Matrix4& a_m4);
 
 	//Overload operators for Multiplication
-	Matrix4		operator *		(const float a_scalar) const;
-	const Matrix4& operator *=		(const float a_scalar);
+	Matrix4				operator *		(const float a_scalar) const;
+	const Matrix4&		operator *=		(const float a_scalar);
 
-	Vector4		operator *		(const Vector4& a_v4) const;
+	Vector4				operator *		(const Vector4& a_v4) const;
 
-	Matrix4		operator *		(const Matrix4& a_m4) const;
-	const Matrix4& operator *=		(const Matrix4& a_m4);
+	Matrix4				operator *		(const Matrix4& a_m4) const;
+	const Matrix4&		operator *=		(const Matrix4& a_m4);
 
-	Vector3		operator *		(const Vector3& a_v3) const;
+	Vector3				operator *		(const Vector3& a_v3) const;
 
 	//Transpose
 	void		Transpose();
@@ -102,11 +102,11 @@ public:
 
 
 	//Camera Projection Functions
-	bool		Perspective		(float fRafFovY, float fAspectRatio, float fZNear, float fZFar);
-	bool		Ortographic		(float fLeft, float fRight, float fTop, float fBottom, float fNear, float fFar);
-	static	Matrix4		LookAt	(const Vector3& a_v3EyePos, const Vector3& a_v3Target, const Vector3& a_v3Up);
+	bool				Perspective		(float fRafFovY, float fAspectRatio, float fZNear, float fZFar);
+	bool				Ortographic		(float fLeft, float fRight, float fTop, float fBottom, float fNear, float fFar);
+	static	Matrix4		LookAt			(const Vector3& a_v3EyePos, const Vector3& a_v3Target, const Vector3& a_v3Up);
 
 	//Shear Matrix
-	void		Shear			(float xy, float xz, float yx, float yz, float zx, float zy);
-	void		Orthonormalise();
+	void				Shear			(float xy, float xz, float yx, float yz, float zx, float zy);
+	void				Orthonormalise();
 };

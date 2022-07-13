@@ -24,17 +24,17 @@ public:
 #pragma endregion
 #pragma region Getters
 	 //Getters
-	Vector3 Origin() const { return m_v3Origin; }
-	Vector3 Direction() const { return m_v3Direction; }
+	Vector3			Origin()		const		{ return m_v3Origin; }
+	Vector3			Direction()		const		{ return m_v3Direction; }
 
-	float MaxDistance() const { return m_MaxLength; }
-	float MinLength() const { return m_MinLength; }
+	float			MaxDistance()	const		{ return m_MaxLength; }
+	float			MinLength()		const		{ return m_MinLength; }
 #pragma endregion
 	//Get Point along ray at distance
-	Vector3 PointAt(float a_distance);
+	Vector3			PointAt				(float a_distance);
 
 	//Sphere Intersection Test
-	float IntersectSphere(const Vector3& a_center, const float a_radius);
+	float			IntersectSphere		(const Vector3& a_center, const float a_radius);
 
 
 };
