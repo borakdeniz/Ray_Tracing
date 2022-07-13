@@ -8,6 +8,7 @@
 #include <DirectionalLight.h>
 #include <time.h>
 #include <Scene.h>
+#include <Material.h>
 
 
 typedef enum input_args
@@ -30,8 +31,8 @@ void displayUsage(char* a_path) {
 int main(int argv, char* argc[]) {
 
 	//Setting up the dimensions of the image
-	int imageWidth = 524;
-	int imageHeight = 256;
+	int imageWidth = 1920;
+	int imageHeight = 1080;
 	int channelColours = 255;
 
 	//output file name
@@ -84,20 +85,13 @@ int main(int argv, char* argc[]) {
 
 	Camera mainCamera;
 	mainCamera.SetPerspective(60.f, (float)imageWidth / (float)imageHeight, 0.1f, 1000.f);
-	mainCamera.setPosition(Vector3(0.f, 0.f, 5.f));
-	mainCamera.LookAt(Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f));
+	mainCamera.setPosition(Vector3(0.f, 0.f, 1.f));
+	mainCamera.LookAt(Vector3(0.f, 0.f, -2.5f), Vector3(0.f, 1.f, 0.f));
 
 
 	Random::SetSeed(time(nullptr));
 	int raysPerPixel = 100;
 	int rayBounces = 50;
-	for (int i = 0; i < 20; i++)
-	{
-		std::clog << "Random Int: " << Random::RandInt() << std::endl;
-		std::clog << "Random Float: " << Random::RandFloat() << std::endl;
-		std::clog << "Random Int Range 0 -> 100 " << Random::RandRange(0, 100) << std::endl;
-		std::clog << "Random Float Range -0.5 -> 0.5: " << Random::RandRange(-0.5f, 0.5f) << std::endl;
-	}
 
 	//output the Image Header data
 	std::cout << "P3" << std::endl;
@@ -107,22 +101,34 @@ int main(int argv, char* argc[]) {
 	//Put a light in the scene
 	DirectionalLight dl = DirectionalLight(Matrix4::IDENTITY, Vector3(0.5f, 0.f, 0.5f), Vector3(-0.5773f, -0.5773f, -0.5773f));
 
+	//Define some materials for use with any objects in the scene
+	Material lightBlueSmooth = Material(Vector3(0.2f, 0.6f, 1.f), 0.2f, 0.9f, 0.9f, 0.1f, 0.9f);
+	Material lightBlueRough = Material(Vector3(0.2f, 0.6f, 1.f), 0.2f, 0.9f, 0.3f, 1.f);
+	Material greenSmooth = Material(Vector3(0.f, 0.6f, 0.f), 0.2f, 0.9f, 0.9f, 0.f);
+	Material greenRough = Material(Vector3(0.f, 0.6f, 0.f), 0.2f, 0.9f, 0.9f, 1.f);
+	Material yellowRough = Material(Vector3(0.5f, 0.5f, 0.f), 0.2f, 0.6f, 0.7f, 0.6f, 0.4f);
+
 	//Define a sphere origin and radius
-	Ellipsoid s1(Vector3(0.f, 0.f, -2.5f), 0.5f);
-	s1.m_colour = Vector3(0.5f, 0.f, 0.5f);
+	Ellipsoid s1(Vector3(0.f, -100.5f, -2.5f), 100.f);
+	s1.SetMaterial(&greenRough);
 	s1.SetScale(Vector3(1.f, 1.f, 1.f));
 
-	Ellipsoid s2(Vector3(0.f, -100.5f, -2.5f), 100.f);
-	s2.m_colour = Vector3(0.f, 0.5f, 0.5f);
+	Ellipsoid s2(Vector3(-1.f, 0.f, -2.5f), 0.5f);
+	s2.SetMaterial(&lightBlueRough);
 	s2.SetScale(Vector3(1.f, 1.f, 1.f));
 
-	Ellipsoid s3(Vector3(-2.f, 0.5f, -2.5f), 0.5f);
-	s3.m_colour = Vector3(0.5f, 0.5f, 0.5f);
-	s3.SetScale(Vector3(1.f, 0.5f, 1.f));
+	Ellipsoid s3(Vector3(0.f, 0.f, -2.5f), 0.5f);
+	s3.SetMaterial(&yellowRough);
+	s3.SetScale(Vector3(1.f, 1.f, 1.f));
+
+	Ellipsoid s4(Vector3(1.f, 0.5f, -2.5f), 0.5f);
+	s4.SetMaterial(&lightBlueSmooth);
+	s4.SetScale(Vector3(1.f, 1.f, 1.f));
 	
 	mainScene.AddObject(&s1);
 	mainScene.AddObject(&s2);
 	mainScene.AddObject(&s3);
+	mainScene.AddObject(&s4);
 	mainScene.AddLight(&dl);
 	mainScene.SetCamera(&mainCamera);
 
@@ -147,9 +153,9 @@ int main(int argv, char* argc[]) {
 				Vector2 screenSpacePos = Vector2(screenSpaceX, screenSpaceY);
 
 				//Create a Ray with origin at the camera and direction into the near plane offset
-
 				//convert ray direction into colour space 0->1
-				rayColour += mainScene.CastRay(screenSpacePos);
+				Ray screenRay = mainScene.GetScreenRay(screenSpacePos);
+				rayColour += mainScene.CastRay(screenRay, 10);
 			}
 			rayColour = rayColour * (1.f / (float)raysPerPixel);
 			//write to output

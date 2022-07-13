@@ -1,4 +1,5 @@
 #include <Primitive.h>
+#include <Material.h>
 
 Primitive::Primitive() : m_Transform(Matrix4::IDENTITY), m_Scale(), m_Shear()
 {
@@ -46,4 +47,9 @@ void Primitive::SetShear(float xy, float xz, float yx, float yz, float zx, float
 	Matrix4 shear;
 	shear.Shear( xy,  xz,  yx,  yz,  zx, zy);
 	m_Shear = shear;
+}
+
+void Primitive::SetMaterial(Material* a_material)
+{
+	m_material = a_material;
 }

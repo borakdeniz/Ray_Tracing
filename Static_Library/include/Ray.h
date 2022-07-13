@@ -14,7 +14,7 @@ public:
 #pragma region Constructors/Destructors
 	//Constructors
 	Ray();
-	Ray(const Vector3& a_v3Origin, const Vector3& a_v3Direction, float a_MaxLength = std::numeric_limits<float>::max(), float a_MinLength = 0.f);
+	Ray(const Vector3& a_v3Origin, const Vector3& a_v3Direction, float a_MinLength = 0.f, float a_MaxLength = std::numeric_limits<float>::max());
 	
 	//Copy Constructor
 	Ray(const Ray& a_Ray);

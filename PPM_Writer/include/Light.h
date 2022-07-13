@@ -11,10 +11,10 @@ public:
 	~Light() = default;
 
 	//Each type of light will need to calculate it's own lighting outcome based off the type of light it is
-	virtual ColourRGB	CalculateLighthing	(IntersectionResponse& a_ir, const Vector3& a_eyePos, float a_shadowFactor = 1.0) const = 0;
+	virtual ColourRGB	CalculateLighthing	(const IntersectionResponse& a_ir, const Vector3& a_eyePos, float a_shadowFactor = 1.f) const = 0;
 	
 	//We will ned to have a function to get the direction to the light from given point
-	virtual Vector3 GetDirectionToLight(const Vector3& a_point = Vector3(0.f, 0.f, 0.f)) const;
+	virtual Vector3		GetDirectionToLight	(const Vector3& a_point = Vector3(0.f, 0.f, 0.f)) const;
 
 	//Get and Set Lights matrix
 	Matrix4				GetTransform		()	const;

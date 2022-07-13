@@ -2,6 +2,9 @@
 #include <libMath.h>
 #include <IntersectionResponse.h>
 
+
+class Material;				//Forward declaration of material class
+
 class Primitive
 {
 public:
@@ -21,9 +24,14 @@ public:
 	void SetScale(const Vector3& a_v3);
 
 	void		SetShear(float xy, float xz, float yx, float yz, float zx, float zy);
+
+	void SetMaterial(Material* a_material);
+	const Material* GetMaterial() { return m_material; }
+
 protected:
 	Matrix4 m_Transform;
 	Vector3 m_Scale;
 	Matrix4 m_Shear;
+	Material* m_material;
 
 };

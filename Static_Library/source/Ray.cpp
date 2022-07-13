@@ -11,7 +11,7 @@ Ray::Ray(): m_v3Origin(0.f, 0.f, 0.f),
 
 
 //Constructor with Origin and Direction Values
-Ray::Ray(const Vector3& a_v3Origin, const Vector3& a_v3Direction, float a_maxLength, float a_minLength):
+Ray::Ray(const Vector3& a_v3Origin, const Vector3& a_v3Direction, float a_minLength, float a_maxLength):
 	m_v3Origin(a_v3Origin), m_v3Direction(a_v3Direction), m_MaxLength(a_maxLength), m_MinLength(a_minLength)
 {
 	if (m_v3Direction.Length() > 1.f)

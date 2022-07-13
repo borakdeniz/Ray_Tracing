@@ -17,21 +17,22 @@ public:
 	~Scene();
 
 	//Add and Remove object
-	void AddObject(const Primitive* a_object);
-	void RemoveObject(const Primitive* a_object);
+	void		AddObject		(const Primitive* a_object);
+	void		RemoveObject	(const Primitive* a_object);
 
 	//Add and Remove Light
-	void AddLight(const Light* a_light);
-	void RemoveLight(const Light* a_light);
+	void		AddLight		(const Light* a_light);
+	void		RemoveLight		(const Light* a_light);
 
-	Vector3 CastRay(const Vector2& a_screenSpacePos) const;
+	Ray			GetScreenRay	(const Vector2& a_screenSpacePos)	const;
+
+	ColourRGB	CastRay			(const const Ray& a_ray, int a_bounces)	const;
 
 	//Intersection Test
-	ColourRGB IntersectTest(const Ray& a_ray, int bounces = 10);
+	bool		IntersectTest	(const Ray& a_ray, IntersectionResponse& ir) const;
 
-	bool HitTest(const Ray& a_ray, IntersectionResponse& ir) const;
 
-	void SetCamera(Camera* a_pCamera) { m_pCamera = a_pCamera; }
+	void		SetCamera		(Camera* a_pCamera) { m_pCamera = a_pCamera; }
 
 private:
 	std::vector<const Primitive*> m_objects;

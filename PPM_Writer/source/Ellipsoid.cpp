@@ -44,7 +44,7 @@ bool Ellipsoid::IntersectTest(const Ray& a_ray, IntersectionResponse& a_ir) cons
 		a_ir.HitPos = Vector3(hp.x, hp.y, hp.z);
 		a_ir.SurfaceNormal = Normalize(normalMatrix * sn);
 		a_ir.distance = (a_ray.Origin() - hp.xyz()).Length();
-		a_ir.colour = m_colour;
+		a_ir.material = m_material;
 
 		return true;
 	}
