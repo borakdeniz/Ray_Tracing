@@ -100,24 +100,36 @@ ColourRGB Scene::CastRay(const Ray& a_ray, int a_bounces) const
 			Ray shadowRay = Ray(ir.HitPos, -(*lightIter)->GetDirectionToLight(ir.HitPos), 0.001f);
 			IntersectionResponse sr;
 			float shadowValue = (!IntersectTest(shadowRay, sr));
-			rayColour += (*lightIter)->CalculateLighthing(ir, m_pCamera->GetPosition(), shadowValue);
+			rayColour += (*lightIter) -> CalculateLighthing(ir, m_pCamera->GetPosition(), shadowValue);
 			
 			//if the material that we have hit is reflective we need to calculate the reflection vector
 			//and create a new ray to project into the scene
-			if (ir.material->GetReflective() > 0.f)
+			Ray refractRay;
+			ColourRGB refractionColour = ColourRGB(0.f, 0.f, 0.f);
+			if (ir.material->CalcRefraction(a_ray, ir, refractRay))
 			{
-				Ray bounceRay;
-				if (ir.material->CalcReflection(a_ray, ir, bounceRay))
-				{
-					//Call Intersect test function to accumulate colour of pixel with bounce ray
-					ColourRGB reflectionColour = CastRay(bounceRay, a_bounces - 1) * ir.material->GetReflective();
-					rayColour += reflectionColour;
-				}
-				else
-				{
-					return Vector3(0.f, 0.f, 0.f);
-				}
+				refractionColour = CastRay(refractRay, a_bounces - 1) * ir.material->GetTransparency();
 			}
+
+			ColourRGB reflectionColour = ColourRGB(0.f, 0.f, 0.f);
+			Ray bounceRay;
+
+			if (ir.material->CalcReflection(a_ray, ir, bounceRay))
+			{
+				refractionColour = CastRay(bounceRay, a_bounces - 1) * ir.material->GetReflective();
+			}
+
+			if (ir.material->GetReflective() > 0.f && ir.material->GetTransparency() > 0.f)
+			{
+				float reflectance = ir.material->Schlick(a_ray, ir);
+				rayColour += reflectionColour * reflectance + refractionColour * (1.f - reflectance);
+			}
+
+			else
+			{
+				rayColour += reflectionColour + refractionColour;
+			}
+			
 		}
 		return rayColour;
 	}
